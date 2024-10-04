@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">DiaVantageMobile</string>
+    <!--string for login button-->
+    <string name="login">Login</string>
+    <!--string for register button-->
+    <string name="register">Register</string>
+    <!--string for edittext hint in password-->
+    <string name="enter_password">Enter password</string>
+    <!--string for edittext hint in email-->
+    <string name="enter_username">Enter username</string>
+    <!--string for logout button-->
+    <string name="logout">Logout</string>
 </resources>

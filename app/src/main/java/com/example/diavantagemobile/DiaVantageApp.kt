@@ -9,13 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.diavantagemobile.DiaVantageDestinationsArgs.USER_MESSAGE_ARG
 import com.example.diavantagemobile.ui.login.LoginScreen
 import kotlinx.coroutines.CoroutineScope
 
