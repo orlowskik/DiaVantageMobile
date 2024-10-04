@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,12 +67,27 @@ fun LoginScreen(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary,
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "DiaVantageMobile",
-                )
+                Row (
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+
+                ){
+                    Text(
+                        modifier = modifier,
+                        textAlign = TextAlign.Center,
+                        text = "DiaVantageMobile",
+                    )
+                    Image(
+                        painter = painterResource(R.drawable.tm),
+                        contentDescription = null,
+                        modifier = modifier
+                            .size(25.dp)
+                            .padding(bottom = 10.dp)
+                    )
+                }
             }
         },
     ) { innerPadding ->
@@ -92,7 +112,6 @@ private fun LoginLayout(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = modifier
-            .padding(20.dp)
     ) {
         IconImage(modifier = modifier)
         LoginInput(modifier = modifier)
@@ -130,19 +149,31 @@ private fun IconImage(modifier: Modifier = Modifier){
 
 
 @Composable
-private fun LoginButtons(modifier: Modifier= Modifier){
-    Row (modifier) {
-        ElevatedButton(
-            onClick = {}
-        ){
-            Text(text = "Register")
-        }
+private fun LoginButtons(modifier: Modifier = Modifier){
+    Column (modifier = modifier
+        .padding(top = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top) {
         Button(
+            modifier = modifier
+                .size(width= 250.dp, height = 50.dp),
             onClick = { /*TODO*/ }) {
             Text(
                 text = "Login"
             )
         }
+        Text(
+            modifier = modifier,
+            text = "or"
+        )
+        ElevatedButton(
+            modifier = modifier
+                .size(width = 250.dp, height = 50.dp),
+            onClick = {}
+        ){
+            Text(text = "Register")
+        }
+
     }
 }
 
@@ -150,21 +181,21 @@ private fun LoginButtons(modifier: Modifier= Modifier){
 
 @Composable
 private fun LoginInput(modifier: Modifier = Modifier){
-    val username = "Username"
-    val password = "Password"
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         TextField(
             value = username,
-            onValueChange = {} )
+            onValueChange = { username = it },
+            label = { Text("Username") })
         TextField(
             value = password,
-            onValueChange = {})
-        LoginButtons(modifier
-            .padding(top = 30.dp))
+            onValueChange = {password = it},
+            label = { Text("Password") })
+        LoginButtons(modifier)
     }
 
 }
