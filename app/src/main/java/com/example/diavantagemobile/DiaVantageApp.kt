@@ -9,6 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
+import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.CoroutineScope
 
@@ -31,6 +34,7 @@ fun DiaVantageApp(
         DiaVantageNavigationActions(navController)
     },
     api: DiaVantageApi = DiaVantageApi(),
+    loginStateModel: LoginStateModel = LoginStateModel(),
 ) {
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentNavBackStackEntry?.destination?.route ?: startDestination
@@ -44,10 +48,10 @@ fun DiaVantageApp(
             LoginScreen(
                 modifier = modifier,
                 api = api,
-                onSuccessfulLogin = fun (success: Boolean) { if (success) {
+                onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, token: String?) { if (success) {
+                    loginStateModel.loginUser(username, password, token)
+                    Log.i("Login", loginStateModel.loginState.value.toString())
                     navActions.navigateToHome()
-                } else{
-                    navActions.navigateToLogin()
                 }},
             )
         }
@@ -56,6 +60,8 @@ fun DiaVantageApp(
                 api = api,
                 modifier = modifier,
                 onLogoutButtonPressed = fun (success : Boolean) { if (success) {
+                    loginStateModel.logoutUser()
+                    Log.i("Logout", loginStateModel.loginState.value.toString())
                     navActions.navigateToLogin()
                 } else{
                     Log.e("Error", "Logout failed")

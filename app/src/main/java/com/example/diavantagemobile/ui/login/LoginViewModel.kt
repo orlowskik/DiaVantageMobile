@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.diavantagemobile.util.LoginState
+import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,8 +15,7 @@ import kotlinx.coroutines.runBlocking
 
 
 class LoginViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(LoginState())
-    val uiState : StateFlow<LoginState> = _uiState.asStateFlow()
+
 
     var inputUsername by mutableStateOf("")
         private set
@@ -32,12 +32,15 @@ class LoginViewModel : ViewModel() {
     }
 
     fun authenticateUser(api: DiaVantageApi) = runBlocking{
-        if (api.authenticate(inputUsername, inputPassword)){
-            _uiState.update { currentState -> currentState.copy(isLogged = true, username = inputUsername) }
-            return@runBlocking true
-        }
-        return@runBlocking false
+        val result = api.authenticate(inputUsername, inputPassword)
+        return@runBlocking result
+    }
+
+    fun resetUserInput(){
+        inputUsername = ""
+        inputPassword = ""
 
     }
+
 
 }

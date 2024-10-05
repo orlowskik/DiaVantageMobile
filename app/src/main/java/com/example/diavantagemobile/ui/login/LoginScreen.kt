@@ -57,6 +57,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.core.app.ActivityScenario.launch
+import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.runBlocking
 
@@ -68,7 +69,7 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     api: DiaVantageApi,
-    onSuccessfulLogin: (Boolean) -> Unit,
+    onSuccessfulLogin: (Boolean, String?, String?, String?) -> Unit,
 ){
     Scaffold(
         snackbarHost = {SnackbarHost(snackbarHostState)},
@@ -124,7 +125,11 @@ fun LoginScreen(
                 inputPassword = loginViewModel.inputPassword,
                 onUsernameFilled = { loginViewModel.updateUsername(it) },
                 onPasswordFilled = { loginViewModel.updatePassword(it) },
-                onLoginButtonPressed = { onSuccessfulLogin(loginViewModel.authenticateUser(api = api)) },
+                onLoginButtonPressed = { onSuccessfulLogin(
+                    loginViewModel.authenticateUser(api = api),
+                    loginViewModel.inputUsername,
+                    loginViewModel.inputPassword, null)
+                    loginViewModel.resetUserInput()},
                 modifier = modifier
             )
         }
@@ -279,7 +284,7 @@ private fun LoginInput(
 fun LoginScreenPreview(){
     DiaVantageMobileTheme {
         LoginScreen(
-            onSuccessfulLogin = {},
+            onSuccessfulLogin = fun (s: Boolean, u: String?, p: String?, t: String?){},
             api = DiaVantageApi(),
         )
     }
