@@ -24,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -55,6 +56,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.test.core.app.ActivityScenario.launch
+import com.example.diavantagemobile.util.api.DiaVantageApi
+import kotlinx.coroutines.runBlocking
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,6 +68,7 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     scope: CoroutineScope = rememberCoroutineScope(),
+    api: DiaVantageApi = DiaVantageApi(),
 ){
     val loginUiState by loginViewModel.uiState.collectAsState()
 
@@ -117,7 +122,13 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LoginLayout(
-                modifier)
+                inputUsername = loginViewModel.inputUsername,
+                inputPassword = loginViewModel.inputPassword,
+                onUsernameFilled = { loginViewModel.updateUsername(it) },
+                onPasswordFilled = { loginViewModel.updatePassword(it) },
+                onLoginButtonPressed = {loginViewModel.authenticateUser(api = api)},
+                modifier = modifier
+            )
         }
     }
 }
@@ -127,6 +138,11 @@ fun LoginScreen(
 
 @Composable
 private fun LoginLayout(
+    inputUsername: String,
+    inputPassword: String,
+    onPasswordFilled: (String) -> Unit,
+    onUsernameFilled: (String) -> Unit,
+    onLoginButtonPressed: () -> Unit,
     modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,7 +150,15 @@ private fun LoginLayout(
         modifier = modifier
     ) {
         IconImage(modifier = modifier)
-        LoginInput(modifier = modifier)
+        LoginInput(
+            inputUsername = inputUsername,
+            inputPassword = inputPassword,
+            onUsernameFilled = onUsernameFilled,
+            onPasswordFilled = onPasswordFilled,
+            onLoginButtonPressed = onLoginButtonPressed,
+            modifier = modifier,
+
+        )
     }
 }
 
@@ -169,7 +193,9 @@ private fun IconImage(modifier: Modifier = Modifier){
 
 
 @Composable
-private fun LoginButtons(modifier: Modifier = Modifier){
+private fun LoginButtons(
+    onLoginButtonPressed: () -> Unit,
+    modifier: Modifier = Modifier){
     Column (modifier = modifier
         .padding(top = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -177,7 +203,7 @@ private fun LoginButtons(modifier: Modifier = Modifier){
         Button(
             modifier = modifier
                 .size(width= 250.dp, height = 50.dp),
-            onClick = { /*TODO*/ }) {
+            onClick = onLoginButtonPressed ) {
             Text(
                 text = stringResource(R.string.login)
             )
@@ -200,9 +226,13 @@ private fun LoginButtons(modifier: Modifier = Modifier){
 
 
 @Composable
-private fun LoginInput(modifier: Modifier = Modifier){
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+private fun LoginInput(
+    inputUsername: String,
+    inputPassword: String,
+    onUsernameFilled: (String) -> Unit,
+    onPasswordFilled: (String) -> Unit,
+    onLoginButtonPressed: () -> Unit,
+    modifier: Modifier = Modifier){
     var passwordVisible by remember { mutableStateOf(false) }
 
     Column(
@@ -210,15 +240,15 @@ private fun LoginInput(modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         TextField(
-            value = username,
-            onValueChange = { username = it },
+            value = inputUsername,
+            onValueChange = onUsernameFilled,
             label = { Text("Username") },
             singleLine = true,
             placeholder = { Text("Username") }
         )
         TextField(
-            value = password,
-            onValueChange = {password = it},
+            value = inputPassword,
+            onValueChange = onPasswordFilled,
             label = { Text("Password") },
             singleLine = true,
             placeholder = { Text("Password") },
@@ -238,7 +268,9 @@ private fun LoginInput(modifier: Modifier = Modifier){
                 }
             }
         )
-        LoginButtons(modifier)
+        LoginButtons(
+            onLoginButtonPressed = onLoginButtonPressed,
+            modifier = modifier)
     }
 
 }
