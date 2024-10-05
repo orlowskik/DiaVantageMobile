@@ -67,11 +67,9 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = viewModel(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    scope: CoroutineScope = rememberCoroutineScope(),
-    api: DiaVantageApi = DiaVantageApi(),
+    api: DiaVantageApi,
+    onSuccessfulLogin: (Boolean) -> Unit,
 ){
-    val loginUiState by loginViewModel.uiState.collectAsState()
-
     Scaffold(
         snackbarHost = {SnackbarHost(snackbarHostState)},
         topBar = {
@@ -126,7 +124,7 @@ fun LoginScreen(
                 inputPassword = loginViewModel.inputPassword,
                 onUsernameFilled = { loginViewModel.updateUsername(it) },
                 onPasswordFilled = { loginViewModel.updatePassword(it) },
-                onLoginButtonPressed = {loginViewModel.authenticateUser(api = api)},
+                onLoginButtonPressed = { onSuccessfulLogin(loginViewModel.authenticateUser(api = api)) },
                 modifier = modifier
             )
         }
@@ -280,6 +278,9 @@ private fun LoginInput(
 @Preview(showBackground = true)
 fun LoginScreenPreview(){
     DiaVantageMobileTheme {
-        LoginScreen()
+        LoginScreen(
+            onSuccessfulLogin = {},
+            api = DiaVantageApi(),
+        )
     }
 }

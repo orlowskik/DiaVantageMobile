@@ -4,8 +4,12 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
@@ -14,8 +18,9 @@ import kotlinx.serialization.Serializable
 
 
 data class ApiStrings(
-    val hostName: String = "http://192.168.1.56:8000/",
+    val hostName: String = "http://192.168.0.237:8000/",
     val login: String = "rest-auth/login/",
+    val logout: String = "rest-auth/logout/",
     )
 
 @Serializable
@@ -30,12 +35,11 @@ class DiaVantageApi(
         }
     },
     private val apiStrings: ApiStrings = ApiStrings(),
-){
+) {
 
 
-
-    suspend fun authenticate(username: String, password: String ){
-        Log.i("Request status", "Starting response")
+    suspend fun authenticate(username: String, password: String): Boolean {
+        Log.i("Request status", "Starting login")
         val endpoint = apiStrings.hostName + apiStrings.login
         val response: HttpResponse = httpClient.submitForm(
             url = endpoint,
@@ -45,13 +49,41 @@ class DiaVantageApi(
             }
         )
         Log.i("Response status: ", response.status.toString())
-        if (response.status == HttpStatusCode.OK){
+        if (response.status == HttpStatusCode.OK) {
             val authToken: AuthToken = response.body()
+            updateClientCredentials(username, password)
             Log.i("Token", authToken.toString())
+            return true
         }
-
-
-
-
+        return false
     }
+
+    suspend fun logout(): Boolean{
+        Log.i("Request status", "Starting logout")
+        val endpoint = apiStrings.hostName + apiStrings.logout
+        val response: HttpResponse = httpClient.post(endpoint)
+        Log.i("Response status: ", response.status.toString())
+
+        if (response.status == HttpStatusCode.OK) {
+            Log.i("Logout", "Successful")
+            updateClientCredentials("", "")
+            return true
+        }
+        return false
+    }
+
+    private fun updateClientCredentials(username: String, password: String) {
+        httpClient.config {
+            install(Auth) {
+                basic {
+                    credentials {
+                        BasicAuthCredentials(username = username, password = password)}
+                }
+            }
+        }
+    }
+
+
+
+
 }
