@@ -58,6 +58,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.test.core.app.ActivityScenario.launch
 import com.example.diavantagemobile.util.LoginStateModel
+import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.runBlocking
 
@@ -67,60 +68,14 @@ import kotlinx.coroutines.runBlocking
 fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = viewModel(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     api: DiaVantageApi,
     onSuccessfulLogin: (Boolean, String?, String?, String?) -> Unit,
     onRegisterButtonPressed: () -> Unit = {},
 ){
-    Scaffold(
-        snackbarHost = {SnackbarHost(snackbarHostState)},
-        topBar = {
-            TopAppBar(
-                colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text("DiaVantage | Login Page")
-                }
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
-            ) {
-                Row (
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-
-                ){
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Center,
-                        text = "DiaVantageMobile",
-                    )
-                    Image(
-                        painter = painterResource(R.drawable.tm),
-                        contentDescription = null,
-                        modifier = modifier
-                            .size(25.dp)
-                            .padding(bottom = 10.dp)
-                    )
-                }
-            }
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+    ScreenScaffoldTemplate(
+        modifier = modifier,
+        title = "Login Page",
+        content = {
             LoginLayout(
                 inputUsername = loginViewModel.inputUsername,
                 inputPassword = loginViewModel.inputPassword,
@@ -135,7 +90,8 @@ fun LoginScreen(
                 modifier = modifier
             )
         }
-    }
+    )
+
 }
 
 

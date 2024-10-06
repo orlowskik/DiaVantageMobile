@@ -18,7 +18,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
-import com.example.diavantagemobile.ui.registration.RegistrationWebViewScreen
+import com.example.diavantagemobile.ui.registration.RegistrationScreen
+import com.example.diavantagemobile.ui.registration.RegistrationWebView
 import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +59,8 @@ fun DiaVantageApp(
             )
         }
         composable(DiaVantageDestinations.REGISTRATION_ROUTE) {
-            RegistrationWebViewScreen(
+            RegistrationScreen(
+                modifier = modifier,
                 api = api,
             )
         }

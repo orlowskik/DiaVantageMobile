@@ -35,82 +35,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.diavantagemobile.R
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
+import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.runBlocking
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onLogoutButtonPressed: (Boolean) -> Unit,
     api: DiaVantageApi = DiaVantageApi()
 ){
-    Scaffold (
+    ScreenScaffoldTemplate (
         topBar = {
-            CenterAlignedTopAppBar(
-                colors = centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text("Home Page")
-                },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description",
-
-                        )
-                    }
-                },
-                actions = { AccountIcon(
-                    api = api,
-                    onLogoutButtonPressed = onLogoutButtonPressed,
-                    modifier = modifier) }
-
+            CustomTopAppBar(
+                onLogoutButtonPressed = onLogoutButtonPressed,
+                api = api,
+                modifier = modifier
             )
         },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
-            ) {
-                Row (
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-
-                    ){
-                    Text(
-                        modifier = modifier,
-                        textAlign = TextAlign.Center,
-                        text = "DiaVantageMobile",
-                    )
-                    Image(
-                        painter = painterResource(R.drawable.tm),
-                        contentDescription = null,
-                        modifier = modifier
-                            .size(25.dp)
-                            .padding(bottom = 10.dp)
-                    )
-                }
-            }
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(text = "Home Screen")
-            Text(text = "Logged Successfully")
+        modifier = modifier,
+        content = {
+            Text("Home Page")
+            Text("You have been logged")
         }
-    }
+    )
 }
 
 @Composable
@@ -138,6 +86,40 @@ fun AccountIcon(
         )
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomTopAppBar(
+    onLogoutButtonPressed: (Boolean) -> Unit,
+    api: DiaVantageApi,
+    modifier: Modifier = Modifier
+){
+    CenterAlignedTopAppBar(
+        colors = centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text("Home Page")
+        },
+        navigationIcon = {
+            IconButton(onClick = {}) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,
+                    contentDescription = "Localized description",
+
+                    )
+            }
+        },
+        actions = { AccountIcon(
+            api = api,
+            onLogoutButtonPressed = onLogoutButtonPressed,
+            modifier = modifier) }
+
+    )
+}
+
 
 @Composable
 @Preview(showBackground = true)
