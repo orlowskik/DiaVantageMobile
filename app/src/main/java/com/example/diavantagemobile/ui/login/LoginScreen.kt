@@ -70,6 +70,7 @@ fun LoginScreen(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     api: DiaVantageApi,
     onSuccessfulLogin: (Boolean, String?, String?, String?) -> Unit,
+    onRegisterButtonPressed: () -> Unit = {},
 ){
     Scaffold(
         snackbarHost = {SnackbarHost(snackbarHostState)},
@@ -130,6 +131,7 @@ fun LoginScreen(
                     loginViewModel.inputUsername,
                     loginViewModel.inputPassword, null)
                     loginViewModel.resetUserInput()},
+                onRegisterButtonPressed = onRegisterButtonPressed,
                 modifier = modifier
             )
         }
@@ -146,6 +148,7 @@ private fun LoginLayout(
     onPasswordFilled: (String) -> Unit,
     onUsernameFilled: (String) -> Unit,
     onLoginButtonPressed: () -> Unit,
+    onRegisterButtonPressed: () -> Unit,
     modifier: Modifier = Modifier) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -159,6 +162,7 @@ private fun LoginLayout(
             onUsernameFilled = onUsernameFilled,
             onPasswordFilled = onPasswordFilled,
             onLoginButtonPressed = onLoginButtonPressed,
+            onRegisterButtonPressed = onRegisterButtonPressed,
             modifier = modifier,
 
         )
@@ -198,6 +202,7 @@ private fun IconImage(modifier: Modifier = Modifier){
 @Composable
 private fun LoginButtons(
     onLoginButtonPressed: () -> Unit,
+    onRegisterButtonPressed: () -> Unit,
     modifier: Modifier = Modifier){
     Column (modifier = modifier
         .padding(top = 20.dp),
@@ -218,7 +223,7 @@ private fun LoginButtons(
         ElevatedButton(
             modifier = modifier
                 .size(width = 250.dp, height = 50.dp),
-            onClick = {}
+            onClick = onRegisterButtonPressed
         ){
             Text(text = stringResource(R.string.register))
         }
@@ -235,6 +240,7 @@ private fun LoginInput(
     onUsernameFilled: (String) -> Unit,
     onPasswordFilled: (String) -> Unit,
     onLoginButtonPressed: () -> Unit,
+    onRegisterButtonPressed: () -> Unit,
     modifier: Modifier = Modifier){
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -273,6 +279,7 @@ private fun LoginInput(
         )
         LoginButtons(
             onLoginButtonPressed = onLoginButtonPressed,
+            onRegisterButtonPressed = onRegisterButtonPressed,
             modifier = modifier)
     }
 

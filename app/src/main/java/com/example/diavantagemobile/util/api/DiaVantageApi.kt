@@ -21,6 +21,7 @@ data class ApiStrings(
     val hostName: String = "http://192.168.0.237:8000/",
     val login: String = "rest-auth/login/",
     val logout: String = "rest-auth/logout/",
+    val patientRegister: String = "register/patient/",
     )
 
 @Serializable
@@ -34,7 +35,7 @@ class DiaVantageApi(
             json()
         }
     },
-    private val apiStrings: ApiStrings = ApiStrings(),
+    val apiStrings: ApiStrings = ApiStrings(),
 ) {
 
 

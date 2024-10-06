@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
+import com.example.diavantagemobile.ui.registration.RegistrationWebViewScreen
 import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.CoroutineScope
@@ -48,11 +49,17 @@ fun DiaVantageApp(
             LoginScreen(
                 modifier = modifier,
                 api = api,
+                onRegisterButtonPressed = { navActions.navigateToRegistration() },
                 onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, token: String?) { if (success) {
                     loginStateModel.loginUser(username, password, token)
                     Log.i("Login", loginStateModel.loginState.value.toString())
                     navActions.navigateToHome()
-                }},
+                } },
+            )
+        }
+        composable(DiaVantageDestinations.REGISTRATION_ROUTE) {
+            RegistrationWebViewScreen(
+                api = api,
             )
         }
         composable(DiaVantageDestinations.HOME_ROUTE) {
