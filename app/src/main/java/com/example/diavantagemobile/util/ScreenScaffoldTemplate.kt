@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +32,12 @@ fun ScreenScaffoldTemplate(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
     title: String = "DiaVantage",
-    topBar: @Composable () -> Unit = { CreateTopAppBar(title = title) },
+    actions: @Composable RowScope.() -> Unit = {},
+    navigationIcon: @Composable () -> Unit = {},
+    topBar: @Composable () -> Unit = { CreateTopAppBar(
+        actions = actions,
+        navigationIcon = navigationIcon,
+        title = title) },
 ){
     Scaffold(
         topBar = topBar,
@@ -82,6 +88,8 @@ fun ScreenScaffoldTemplate(
 fun CreateTopAppBar(
     title: String = "Top Bar",
     modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
+    navigationIcon: @Composable () -> Unit = {},
 ){
     TopAppBar(
         colors = topAppBarColors(
@@ -91,6 +99,8 @@ fun CreateTopAppBar(
         title = {
             Text(title)
         },
-        actions = {}
+        navigationIcon = navigationIcon,
+        actions = actions,
+        modifier = modifier,
     )
 }

@@ -62,6 +62,7 @@ fun DiaVantageApp(
             RegistrationScreen(
                 modifier = modifier,
                 api = api,
+                returnToLogin = { navActions.navigateToLogin() }
             )
         }
         composable(DiaVantageDestinations.HOME_ROUTE) {
