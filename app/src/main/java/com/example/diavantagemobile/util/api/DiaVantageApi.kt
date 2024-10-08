@@ -4,13 +4,13 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
-import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
 
 
 data class ApiStrings(
-    val hostName: String = "http://192.168.0.237:8000/",
+    val hostName: String = "http://192.168.1.56:8000/",
     val login: String = "rest-auth/login/",
     val logout: String = "rest-auth/logout/",
     val patientRegister: String = "register/patient/",
@@ -78,13 +78,10 @@ class DiaVantageApi(
             install(Auth) {
                 basic {
                     credentials {
-                        BasicAuthCredentials(username = username, password = password)}
+                        BasicAuthCredentials(username = username, password = password)
+                    }
                 }
             }
         }
     }
-
-
-
-
 }

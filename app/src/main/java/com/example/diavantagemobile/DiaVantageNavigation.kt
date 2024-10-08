@@ -16,10 +16,7 @@ private object DiaVantageScreens {
 
 object DiaVantageDestinationsArgs {
     const val USER_MESSAGE_ARG = "userMessage"
-    const val TASK_ID_ARG = "taskId"
-    const val TITLE_ARG = "title"
 }
-
 
 object DiaVantageDestinations {
     const val LOGIN_ROUTE = "$LOGIN_SCREEN?$USER_MESSAGE_ARG={$USER_MESSAGE_ARG}"

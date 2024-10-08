@@ -9,8 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
-import com.example.diavantagemobile.ui.registration.RegistrationWebView
 import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import kotlinx.coroutines.CoroutineScope
@@ -69,13 +66,20 @@ fun DiaVantageApp(
             HomeScreen(
                 api = api,
                 modifier = modifier,
-                onLogoutButtonPressed = fun (success : Boolean) { if (success) {
-                    loginStateModel.logoutUser()
-                    Log.i("Logout", loginStateModel.loginState.value.toString())
-                    navActions.navigateToLogin()
-                } else{
-                    Log.e("Error", "Logout failed")
-                }}
+                onLogoutButtonPressed = fun(success: Boolean) {
+                    if (success) {
+                        loginStateModel.logoutUser()
+                        Log.i("Logout", loginStateModel.loginState.value.toString())
+                        navActions.navigateToLogin()
+                    } else {
+                        Log.e("Error", "Logout failed")
+                    }
+                },
+                onAccountInfoButtonPressed = {},
+                onGlucosePress = {},
+                onBloodPress = {},
+                onPhysiciansPress = {},
+                onHistoryPress = {},
             )
         }
     }
