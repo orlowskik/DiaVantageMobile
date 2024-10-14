@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.diavantagemobile.ui.glucose.GlucoseScreen
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
@@ -76,11 +77,19 @@ fun DiaVantageApp(
                     }
                 },
                 onAccountInfoButtonPressed = {},
-                onGlucosePress = {},
+                onGlucosePress = { navActions.navigateToGlucose() },
                 onBloodPress = {},
                 onPhysiciansPress = {},
                 onHistoryPress = {},
             )
         }
+        composable(DiaVantageDestinations.GLUCOSE_ROUTE) {
+            GlucoseScreen(
+                api = api,
+                modifier = modifier,
+                returnToHome = { navActions.navigateToHome() }
+            )
+        }
+
     }
 }

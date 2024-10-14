@@ -18,7 +18,7 @@ import kotlinx.serialization.Serializable
 
 
 data class ApiStrings(
-    val hostName: String = "http://192.168.1.56:8000/",
+    val hostName: String = "https://diavantage.azurewebsites.net//",
     val login: String = "rest-auth/login/",
     val logout: String = "rest-auth/logout/",
     val patientRegister: String = "register/patient/",

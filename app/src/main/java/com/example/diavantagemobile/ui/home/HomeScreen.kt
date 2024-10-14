@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
+import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.data.TopAppBarTypes
 import kotlinx.coroutines.runBlocking
 
 @Composable
@@ -50,10 +52,11 @@ fun HomeScreen(
 ){
     ScreenScaffoldTemplate (
         topBar = {
-            CustomTopAppBar(
-                onLogoutButtonPressed = onLogoutButtonPressed,
-                onAccountInfoButtonPressed= onAccountInfoButtonPressed,
-                api = api,
+            CreateTopAppBar(
+                title = "Home Page",
+                appBarType = TopAppBarTypes.CenterAlignedTopAppBar,
+                actions = { HomeActions(onLogoutButtonPressed, api, modifier) },
+                navigationIcon = { HomeNavigationIcon(onAccountInfoButtonPressed, modifier) },
                 modifier = modifier,
             )
         },
@@ -172,38 +175,34 @@ fun AccountIcon(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTopAppBar(
-    onLogoutButtonPressed: (Boolean) -> Unit,
+fun HomeNavigationIcon(
     onAccountInfoButtonPressed: () -> Unit,
-    api: DiaVantageApi,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ){
-    CenterAlignedTopAppBar(
-        colors = centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ),
-        title = {
-            Text("Home Page")
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = onAccountInfoButtonPressed) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description",
+    IconButton(
+        onClick = onAccountInfoButtonPressed,
+        modifier = modifier
+    ){
+        Icon(
+            imageVector = Icons.Filled.Menu,
+            contentDescription = "Localized description",
+            modifier = modifier
+        )
+    }
+}
 
-                    )
-            }
-        },
-        actions = { AccountIcon(
-            api = api,
-            onLogoutButtonPressed = onLogoutButtonPressed,
-            modifier = modifier) }
 
-    )
+@Composable
+fun HomeActions(
+    onLogoutButtonPressed: (Boolean) -> Unit,
+    api: DiaVantageApi,
+    modifier: Modifier,
+){
+    AccountIcon(
+        api = api,
+        onLogoutButtonPressed = onLogoutButtonPressed,
+        modifier = modifier)
 }
 
 

@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.centerAlignedTopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.diavantagemobile.R
+import com.example.diavantagemobile.util.data.TopAppBarTypes
 
 
 @Composable
@@ -81,25 +84,43 @@ fun ScreenScaffoldTemplate(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTopAppBar(
     title: String = "Top Bar",
+    appBarType: TopAppBarTypes = TopAppBarTypes.SmallTopAppBar,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     navigationIcon: @Composable () -> Unit = {},
 ){
-    TopAppBar(
-        colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ),
-        title = {
-            Text(title)
-        },
-        navigationIcon = navigationIcon,
-        actions = actions,
-        modifier = modifier,
-    )
+
+    when (appBarType){
+        TopAppBarTypes.SmallTopAppBar ->
+            TopAppBar(
+                colors = topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(title)
+                },
+                navigationIcon = navigationIcon,
+                actions = actions,
+                modifier = modifier,
+            )
+
+        TopAppBarTypes.CenterAlignedTopAppBar ->
+            CenterAlignedTopAppBar(
+                colors = centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(title)
+                },
+                navigationIcon = navigationIcon,
+                actions = actions,
+                modifier = modifier,
+            )
+    }
 }
