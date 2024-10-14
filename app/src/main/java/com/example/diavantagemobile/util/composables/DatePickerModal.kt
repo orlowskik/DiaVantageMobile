@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,10 +33,13 @@ fun DatePickerFieldToModal(
     inputDate: String,
     onDateChange: (millis: Long?) -> Unit,
     modifier: Modifier = Modifier,
+    currentTime: Calendar = Calendar.getInstance(),
     debugPicker: Boolean = false
 ) {
     var showDatePicker by remember { mutableStateOf(debugPicker) }
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = currentTime.timeInMillis
+    )
 
     OutlinedTextField(
         value = inputDate,
