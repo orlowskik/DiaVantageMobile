@@ -1,21 +1,13 @@
-package com.example.diavantagemobile.ui.glucose
+package com.example.diavantagemobile.ui.blood
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,9 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,9 +35,9 @@ import com.example.diavantagemobile.util.data.TopAppBarTypes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GlucoseScreen(
+fun BloodScreen(
     modifier: Modifier = Modifier,
-    glucoseViewModel: GlucoseViewModel = viewModel(),
+    bloodViewModel: BloodViewModel = viewModel(),
     api: DiaVantageApi = DiaVantageApi(),
     returnToHome: () -> Unit = {}
 
@@ -56,7 +45,7 @@ fun GlucoseScreen(
     ScreenScaffoldTemplate(
         topBar = {
             CreateTopAppBar(
-                title = "Glucose insert",
+                title = "Blood insert",
                 appBarType = TopAppBarTypes.CenterAlignedTopAppBar,
                 actions = {},
                 navigationIcon = {
@@ -70,17 +59,18 @@ fun GlucoseScreen(
                 modifier = modifier
             )
         },
-        content = { GlucoseContentLayout(
-            inputGlucose = glucoseViewModel.inputGlucose,
-            inputType =  glucoseViewModel.inputType,
-            inputDate = glucoseViewModel.inputDate,
-            inputTime = glucoseViewModel.inputTime,
-            measurementTypes = glucoseViewModel.typesMap,
-            onGlucoseChange = fun(glucose: String) { glucoseViewModel.updateGlucose(glucose)},
-            onTypeChange = fun(type: Int){ glucoseViewModel.updateType(type)},
-            onDateChange = fun(millis: Long?) { glucoseViewModel.updateDate(millis) },
-            onTimeChange = fun(time: TimePickerState?) { glucoseViewModel.updateTime(time) },
-            onResetButton = { glucoseViewModel.resetUserInput() },
+        content = { BloodContentLayout(
+            inputSystolic = bloodViewModel.inputSystolic,
+            inputDiastolic = bloodViewModel.inputDiastolic,
+            inputPulse = bloodViewModel.inputPulse,
+            inputDate = bloodViewModel.inputDate,
+            inputTime = bloodViewModel.inputTime,
+            onSystolicChange = fun(systolic: String){ bloodViewModel.updateSystolic(systolic) },
+            onDiastolicChange = fun(diastolic: String){ bloodViewModel.updateDiastolic(diastolic) },
+            onPulseChange = fun(pulse: String){ bloodViewModel.updatePulse(pulse) },
+            onDateChange = fun(millis: Long?) { bloodViewModel.updateDate(millis) },
+            onTimeChange = fun(time: TimePickerState?) { bloodViewModel.updateTime(time) },
+            onResetButton = { bloodViewModel.resetUserInput() },
             onSendButton = {},
             modifier = modifier,
         )},
@@ -91,14 +81,15 @@ fun GlucoseScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GlucoseContentLayout(
-    inputGlucose: String,
-    inputType: Int,
+fun BloodContentLayout(
+    inputSystolic: String,
+    inputDiastolic: String,
+    inputPulse: String,
     inputDate: String,
     inputTime: String,
-    measurementTypes: Map<Int, String>,
-    onGlucoseChange: (String) -> Unit,
-    onTypeChange: (Int) -> Unit,
+    onSystolicChange: (String) -> Unit,
+    onDiastolicChange: (String) -> Unit,
+    onPulseChange: (String) -> Unit,
     onDateChange: (Long?) -> Unit,
     onTimeChange: (TimePickerState?) -> Unit,
     onResetButton: () -> Unit,
@@ -113,11 +104,11 @@ fun GlucoseContentLayout(
     ){
 
         TextField(
-            value = inputGlucose,
-            onValueChange = onGlucoseChange,
-            label = { Text("Glucose Measurement Value") },
+            value = inputSystolic,
+            onValueChange = onSystolicChange,
+            label = { Text("Systolic Blood Pressure Measurement Value") },
             singleLine = true,
-            placeholder = { Text("mmHg") },
+            placeholder = { Text("mm/Hg") },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Decimal
             ),
@@ -125,13 +116,35 @@ fun GlucoseContentLayout(
                 .fillMaxWidth()
         )
 
-        MeasurementTypeInput(
-            inputType = inputType,
-            typesMap = measurementTypes,
-            onTypeChange = onTypeChange,
+        TextField(
+            value = inputDiastolic,
+            onValueChange = onDiastolicChange,
+            label = {Text("Diastolic Blood Pressure Measurement Value")},
+            singleLine = true,
+            placeholder = {Text("mm/Hg")},
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal
+            ),
             modifier = modifier
+                .fillMaxWidth()
                 .padding(top = 10.dp)
         )
+
+        TextField(
+            value = inputPulse,
+            onValueChange = onPulseChange,
+            label = {Text("Pulse Measurement Value")},
+            singleLine = true,
+            placeholder = {Text("beats/minute")},
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal
+            ),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp)
+        )
+
+
 
         DatePickerFieldToModal(
             inputDate = inputDate,
@@ -171,77 +184,12 @@ fun GlucoseContentLayout(
     }
 }
 
-@Composable
-fun MeasurementTypeInput(
-    inputType: Int,
-    typesMap: Map<Int, String>,
-    onTypeChange: (Int) -> Unit,
-    modifier: Modifier = Modifier
-){
-    val isDropdownExpanded = remember { mutableStateOf(false) }
-
-
-
-    Box (
-        modifier = modifier
-            .height(50.dp)
-            .border(
-                width = 1.dp,
-                shape = MaterialTheme.shapes.extraSmall,
-                color = MaterialTheme.colorScheme.outline
-            )
-    ){
-        Row (
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .clickable { isDropdownExpanded.value = true }
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(horizontal = 15.dp)
-        ) {
-            Text(
-                text = "Measurement type: ",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            typesMap[inputType]?.let {
-                Text(
-                    text = it
-                )
-            }
-
-            Icon(
-                Icons.Filled.ExpandMore,
-                contentDescription = "Expand icon",
-                modifier = modifier
-                    .padding(bottom = 10.dp)
-            )
-        }
-        DropdownMenu(
-            expanded = isDropdownExpanded.value,
-            onDismissRequest = { isDropdownExpanded.value = false}
-        ) {
-            typesMap.forEach {
-                DropdownMenuItem(
-                    text = {
-                        Text(text = it.value)
-                    },
-                    onClick = {
-                        isDropdownExpanded.value = false
-                        onTypeChange(it.key)
-                    }
-                )
-            }
-        }
-    }
-}
-
 
 @Composable
 @Preview(showBackground = true)
-fun GlucoseScreenPreview(){
+fun BloodScreenPreview(){
     DiaVantageMobileTheme {
-        GlucoseScreen(
+        BloodScreen(
 
         )
     }

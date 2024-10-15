@@ -1,39 +1,26 @@
-package com.example.diavantagemobile.ui.glucose
+package com.example.diavantagemobile.ui.blood
 
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.EnumMap
-import java.util.EnumSet
 import java.util.Locale
 
-
-class GlucoseViewModel : ViewModel(){
-
-    val typesMap = mapOf(
-        0 to "undefined",
-        1 to "Before Breakfast",
-        2 to "After Breakfast",
-        3 to "Before Lunch",
-        4 to "After Lunch",
-        5 to "Before Dinner",
-        6 to "After Dinner"
-    )
-
-
-    var inputGlucose by mutableStateOf("")
+class BloodViewModel: ViewModel() {
+    var inputSystolic by mutableStateOf("")
         private set
 
-    var inputType by mutableIntStateOf(0)
+    var inputDiastolic by mutableStateOf("")
+        private set
+
+    var inputPulse by mutableStateOf("")
         private set
 
     var inputDate by mutableStateOf("")
@@ -42,12 +29,16 @@ class GlucoseViewModel : ViewModel(){
     var inputTime by mutableStateOf("")
         private set
 
-    fun updateGlucose(glucose: String){
-        inputGlucose = glucose
+    fun updateSystolic(systolic: String){
+        inputSystolic = systolic
     }
 
-    fun updateType(type: Int){
-        inputType = type
+    fun updateDiastolic(diastolic: String){
+        inputDiastolic = diastolic
+    }
+
+    fun updatePulse(pulse: String){
+        inputPulse = pulse
     }
 
     fun updateDate(millis: Long?){
@@ -75,10 +66,14 @@ class GlucoseViewModel : ViewModel(){
         return formatter.format(Date(millis))
     }
 
+
     fun resetUserInput(){
-        inputGlucose = ""
-        inputType = 0
+        inputSystolic = ""
+        inputDiastolic = ""
+        inputPulse = ""
         inputDate = ""
         inputTime = ""
     }
+
+
 }

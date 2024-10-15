@@ -84,4 +84,9 @@ class DiaVantageApi(
             }
         }
     }
+
+
+    fun sendGlucoseMeasurement(measurement: Long, measurementType: String, measurementDate: String){
+
+    }
 }

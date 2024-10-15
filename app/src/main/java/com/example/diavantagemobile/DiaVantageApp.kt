@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.diavantagemobile.ui.blood.BloodScreen
 import com.example.diavantagemobile.ui.glucose.GlucoseScreen
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
@@ -78,7 +79,7 @@ fun DiaVantageApp(
                 },
                 onAccountInfoButtonPressed = {},
                 onGlucosePress = { navActions.navigateToGlucose() },
-                onBloodPress = {},
+                onBloodPress = { navActions.navigateToBlood() },
                 onPhysiciansPress = {},
                 onHistoryPress = {},
             )
@@ -91,5 +92,12 @@ fun DiaVantageApp(
             )
         }
 
+        composable(DiaVantageDestinations.BLOOD_ROUTE) {
+            BloodScreen(
+                api = api,
+                modifier = modifier,
+                returnToHome = {navActions.navigateToHome()}
+            )
+        }
     }
 }

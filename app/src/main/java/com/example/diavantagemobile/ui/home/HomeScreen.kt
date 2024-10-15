@@ -12,16 +12,13 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults.centerAlignedTopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -102,15 +99,12 @@ fun HomeContent(
                     .fillMaxWidth()
                     .height(100.dp)
                     .padding(top = 25.dp)
-
             ){
                 Text(
                     it.key,
                     style = MaterialTheme.typography.titleLarge,
-
                 )
             }
-
         }
     }
 }
@@ -202,7 +196,8 @@ fun HomeActions(
     AccountIcon(
         api = api,
         onLogoutButtonPressed = onLogoutButtonPressed,
-        modifier = modifier)
+        modifier = modifier
+    )
 }
 
 
@@ -217,7 +212,7 @@ fun HomeScreenPreview(){
             onBloodPress = {},
             onGlucosePress = {},
             onHistoryPress = {}
-            )
+        )
     }
 }
 
