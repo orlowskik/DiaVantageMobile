@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.diavantagemobile.ui.blood.BloodScreen
 import com.example.diavantagemobile.ui.glucose.GlucoseScreen
 import com.example.diavantagemobile.ui.home.HomeScreen
+import com.example.diavantagemobile.ui.home.PhysicianHomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
 import com.example.diavantagemobile.util.LoginStateModel
@@ -53,7 +54,8 @@ fun DiaVantageApp(
                 onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, token: String?) { if (success) {
                     loginStateModel.loginUser(username, password, token)
                     Log.i("Login", loginStateModel.loginState.value.toString())
-                    navActions.navigateToHome()
+
+                    if (api.isPatient()) navActions.navigateToHome() else navActions.navigateToPhysicianHome()
                 } },
             )
         }
@@ -62,6 +64,23 @@ fun DiaVantageApp(
                 modifier = modifier,
                 api = api,
                 returnToLogin = { navActions.navigateToLogin() }
+            )
+        }
+
+        composable(DiaVantageDestinations.PHYSICIAN_HOME_ROUTE){
+            PhysicianHomeScreen(
+                modifier = modifier,
+                api = api,
+                onAccountInfoButtonPressed = {},
+                onLogoutButtonPressed = fun(success: Boolean) {
+                    if (success) {
+                        loginStateModel.logoutUser()
+                        Log.i("Logout", loginStateModel.loginState.value.toString())
+                        navActions.navigateToLogin()
+                    } else {
+                        Log.e("Error", "Logout failed")
+                    }
+                },
             )
         }
         composable(DiaVantageDestinations.HOME_ROUTE) {
