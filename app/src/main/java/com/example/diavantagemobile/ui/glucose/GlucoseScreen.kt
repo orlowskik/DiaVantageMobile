@@ -37,20 +37,25 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
+import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.api.ID
 import com.example.diavantagemobile.util.composables.DatePickerFieldToModal
 import com.example.diavantagemobile.util.composables.TimePickerField
 import com.example.diavantagemobile.util.data.TopAppBarTypes
+import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GlucoseScreen(
+    glucoseRepository: GlucoseRepository,
     modifier: Modifier = Modifier,
     glucoseViewModel: GlucoseViewModel = viewModel(),
-    api: DiaVantageApi = DiaVantageApi(),
-    returnToHome: () -> Unit = {}
+    returnToHome: () -> Unit = {},
+    loginStateModel: LoginStateModel,
+
 
 ){
     ScreenScaffoldTemplate(
@@ -81,7 +86,12 @@ fun GlucoseScreen(
             onDateChange = fun(millis: Long?) { glucoseViewModel.updateDate(millis) },
             onTimeChange = fun(time: TimePickerState?) { glucoseViewModel.updateTime(time) },
             onResetButton = { glucoseViewModel.resetUserInput() },
-            onSendButton = {},
+            onSendButton = {
+                            glucoseViewModel.sendGlucoseMeasurement(
+                            glucoseRepository = glucoseRepository,
+                            patient = loginStateModel.loginState.value.patientId)
+                            glucoseViewModel.resetUserInput()
+                           },
             modifier = modifier,
         )},
         modifier = modifier,
@@ -242,7 +252,8 @@ fun MeasurementTypeInput(
 fun GlucoseScreenPreview(){
     DiaVantageMobileTheme {
         GlucoseScreen(
-
+            glucoseRepository = ID.remoteRepository.glucoseRepository(),
+            loginStateModel = LoginStateModel()
         )
     }
 }

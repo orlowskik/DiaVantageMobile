@@ -23,3 +23,11 @@ data class CsrfResponse(
     val detail: String,
     val CSRFToken : String,
 )
+
+@Serializable
+data class SendGlucoseResponse(
+    val patient: String,
+    val measurement: String,
+    val measurement_type: String,
+    val measurement_date: String,
+)

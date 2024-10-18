@@ -113,8 +113,10 @@ fun DiaVantageApp(
         }
         composable(DiaVantageDestinations.GLUCOSE_ROUTE) {
             GlucoseScreen(
-                api = api,
+                glucoseRepository = ID.remoteRepository.glucoseRepository(),
+                loginStateModel = loginStateModel,
                 modifier = modifier,
+
                 returnToHome = { navActions.navigateToHome() }
             )
         }

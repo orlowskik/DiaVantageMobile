@@ -9,6 +9,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -71,7 +73,7 @@ class GlucoseViewModel : ViewModel(){
     }
 
     private fun convertMillisToDate(millis: Long): String {
-        val formatter = SimpleDateFormat("dd-MM-yyy", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return formatter.format(Date(millis))
     }
 
@@ -80,5 +82,15 @@ class GlucoseViewModel : ViewModel(){
         inputType = 0
         inputDate = ""
         inputTime = ""
+    }
+
+    fun sendGlucoseMeasurement(glucoseRepository: GlucoseRepository, patient: String?) = runBlocking{
+        val result = glucoseRepository.sendGlucoseMeasurement(
+            patient = "11",
+            measurement = inputGlucose,
+            measurementType = inputType.toString(),
+            measurementDate = inputDate
+
+        )
     }
 }
