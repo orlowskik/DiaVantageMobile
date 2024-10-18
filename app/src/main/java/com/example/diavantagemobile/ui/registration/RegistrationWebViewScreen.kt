@@ -36,7 +36,7 @@ fun RegistrationWebView(
             }
         },
         update = { webView ->
-            webView.loadUrl(api.apiStrings.hostName + api.apiStrings.patientRegister)
+            webView.loadUrl(api.apiStrings.patientRegister)
         },
         modifier = modifier
             .fillMaxSize()

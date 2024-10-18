@@ -109,23 +109,6 @@ class DiaVantageApi(
         return false
     }
 
-
-    suspend fun logout(): Boolean{
-        Log.i("Logout", "Starting logout")
-        val endpoint = apiStrings.logout
-        val response: HttpResponse = httpClient.post(endpoint)
-        Log.i("Logout", response.status.toString())
-        Log.i("Logout", response.body())
-
-        if (response.status == HttpStatusCode.OK) {
-            updateClientCredentials("", "")
-            Log.i("Logout", "Successful")
-            return true
-        }
-        Log.i("Logout", "Failed")
-        return false
-    }
-
     private fun updateClientCredentials(username: String, password: String) {
         httpClient.config {
             install(Auth) {
@@ -138,8 +121,4 @@ class DiaVantageApi(
         }
     }
 
-
-    fun sendGlucoseMeasurement(measurement: Long, measurementType: String, measurementDate: String){
-
-    }
 }

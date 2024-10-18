@@ -21,6 +21,7 @@ import com.example.diavantagemobile.ui.home.PhysicianHomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
 import com.example.diavantagemobile.util.LoginStateModel
+import com.example.diavantagemobile.util.LoginUserInfo
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
 import kotlinx.coroutines.CoroutineScope
@@ -58,10 +59,10 @@ fun DiaVantageApp(
                 api = api,
                 onRegisterButtonPressed = { navActions.navigateToRegistration() },
                 onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, patientId: String?) { if (success) {
-                    loginStateModel.loginUser(username, password, patientId)
-                    Log.i("Login", loginStateModel.loginState.value.toString())
+                    LoginUserInfo.userInfo.updateUserInfo(username, password, patientId)
+                    Log.i("Login", LoginUserInfo.userInfo.getInfo().toString())
 
-                     if (loginStateModel.loginState.value.patientId != null) navActions.navigateToHome() else navActions.navigateToPhysicianHome()
+                     if (LoginUserInfo.userInfo.getDistinctInfo("patientId") != null) navActions.navigateToHome() else navActions.navigateToPhysicianHome()
                 } },
             )
         }
@@ -98,7 +99,7 @@ fun DiaVantageApp(
                 onLogoutButtonPressed = fun(success: Boolean) {
                     if (success) {
                         loginStateModel.logoutUser()
-                        Log.i("Logout", loginStateModel.loginState.value.toString())
+                        Log.i("Logout", LoginUserInfo.userInfo.getInfo().toString())
                         navActions.navigateToLogin()
                     } else {
                         Log.e("Error", "Logout failed")
@@ -114,7 +115,7 @@ fun DiaVantageApp(
         composable(DiaVantageDestinations.GLUCOSE_ROUTE) {
             GlucoseScreen(
                 glucoseRepository = ID.remoteRepository.glucoseRepository(),
-                loginStateModel = loginStateModel,
+                patientId = LoginUserInfo.userInfo.getDistinctInfo("patientId"),
                 modifier = modifier,
 
                 returnToHome = { navActions.navigateToHome() }

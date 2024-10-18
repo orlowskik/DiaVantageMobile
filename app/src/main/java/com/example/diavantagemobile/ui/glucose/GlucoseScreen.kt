@@ -54,7 +54,7 @@ fun GlucoseScreen(
     modifier: Modifier = Modifier,
     glucoseViewModel: GlucoseViewModel = viewModel(),
     returnToHome: () -> Unit = {},
-    loginStateModel: LoginStateModel,
+    patientId: String?,
 
 
 ){
@@ -89,7 +89,7 @@ fun GlucoseScreen(
             onSendButton = {
                             glucoseViewModel.sendGlucoseMeasurement(
                             glucoseRepository = glucoseRepository,
-                            patient = loginStateModel.loginState.value.patientId)
+                            patient = patientId)
                             glucoseViewModel.resetUserInput()
                            },
             modifier = modifier,
@@ -253,7 +253,7 @@ fun GlucoseScreenPreview(){
     DiaVantageMobileTheme {
         GlucoseScreen(
             glucoseRepository = ID.remoteRepository.glucoseRepository(),
-            loginStateModel = LoginStateModel()
+            patientId = "11"
         )
     }
 }

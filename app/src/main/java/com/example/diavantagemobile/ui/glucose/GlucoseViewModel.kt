@@ -86,10 +86,10 @@ class GlucoseViewModel : ViewModel(){
 
     fun sendGlucoseMeasurement(glucoseRepository: GlucoseRepository, patient: String?) = runBlocking{
         val result = glucoseRepository.sendGlucoseMeasurement(
-            patient = "11",
+            patient = patient,
             measurement = inputGlucose,
             measurementType = inputType.toString(),
-            measurementDate = inputDate
+            measurementDate = inputDate + "T" + inputTime
 
         )
     }

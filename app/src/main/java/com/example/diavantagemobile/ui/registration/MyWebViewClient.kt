@@ -12,6 +12,6 @@ class MyWebViewClient : WebViewClient() {
     @Deprecated("Deprecated in Java")
     override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
         Log.i("WebViewClient", "shouldOverrideUrlLoading: $url")
-        return url != api.apiStrings.hostName + api.apiStrings.patientRegister
+        return url != api.apiStrings.patientRegister
     }
 }
