@@ -16,16 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.api.ID
 import com.example.diavantagemobile.util.data.TopAppBarTypes
+import com.example.diavantagemobile.util.data.interfaces.LogoutRepository
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun PhysicianHomeScreen(
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = viewModel(),
+    logoutRepository: LogoutRepository,
     onLogoutButtonPressed: (Boolean) -> Unit,
     onAccountInfoButtonPressed: () -> Unit,
     api: DiaVantageApi = DiaVantageApi()
@@ -35,15 +40,21 @@ fun PhysicianHomeScreen(
             CreateTopAppBar(
                 title = "Physician Home Page",
                 appBarType = TopAppBarTypes.CenterAlignedTopAppBar,
-                actions = { PhysicianActions(onLogoutButtonPressed, api, modifier) },
+                actions = { PhysicianActions(
+                    homeViewModel,
+                    logoutRepository,
+                    onLogoutButtonPressed,
+                    api,
+                    modifier) },
                 navigationIcon = { PhysicianNavigationIcon(onAccountInfoButtonPressed, modifier) },
                 modifier = modifier,
             )
         },
         modifier = modifier,
         content = { PhysicianContent(
+            homeViewModel,
+            logoutRepository,
             onLogoutButtonPressed,
-            api,
             modifier
         )}
     )
@@ -52,8 +63,9 @@ fun PhysicianHomeScreen(
 
 @Composable
 fun PhysicianContent(
+    homeViewModel: HomeViewModel,
+    logoutRepository: LogoutRepository,
     onLogoutButtonPressed: (Boolean) -> Unit,
-    api: DiaVantageApi,
     modifier: Modifier = Modifier,
 ){
     Column(
@@ -69,7 +81,7 @@ fun PhysicianContent(
             style = MaterialTheme.typography.displayLarge
         )
         Button(
-            onClick = { runBlocking { onLogoutButtonPressed(api.logout()) } },
+            onClick =  { onLogoutButtonPressed(homeViewModel.logoutUser(logoutRepository)) },
         ) {
             Text(
                 text = "Logout",
@@ -100,11 +112,15 @@ fun PhysicianNavigationIcon(
 
 @Composable
 fun PhysicianActions(
+    homeViewModel: HomeViewModel,
+    logoutRepository: LogoutRepository,
     onLogoutButtonPressed: (Boolean) -> Unit,
     api: DiaVantageApi,
     modifier: Modifier,
 ){
     AccountIcon(
+        homeViewModel = homeViewModel,
+        logoutRepository = logoutRepository,
         api = api,
         onLogoutButtonPressed = onLogoutButtonPressed,
         modifier = modifier
@@ -119,6 +135,7 @@ fun PhysicianScreenPreview(){
         PhysicianHomeScreen(
             onLogoutButtonPressed = {},
             onAccountInfoButtonPressed = {},
+            logoutRepository = ID.remoteRepository.logoutRepository()
         )
     }
 }

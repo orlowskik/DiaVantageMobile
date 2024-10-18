@@ -9,9 +9,9 @@ class LoginStateModel {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
 
-    fun loginUser(username: String?, password: String?, token: String?) {
+    fun loginUser(username: String?, password: String?, patientId: String?) {
         _loginState.update { currentState ->
-            currentState.copy(isLogged = true, username = username, password = password, authToken = token) }
+            currentState.copy(isLogged = true, username = username, password = password, patientId = patientId) }
     }
 
     fun logoutUser() {

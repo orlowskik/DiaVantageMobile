@@ -22,6 +22,7 @@ import com.example.diavantagemobile.ui.login.LoginScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
 import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.api.ID
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -35,11 +36,14 @@ fun DiaVantageApp(
     navActions: DiaVantageNavigationActions = remember(navController) {
         DiaVantageNavigationActions(navController)
     },
-    api: DiaVantageApi = DiaVantageApi(),
     loginStateModel: LoginStateModel = LoginStateModel(),
 ) {
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentNavBackStackEntry?.destination?.route ?: startDestination
+
+    val api = DiaVantageApi()
+
+
 
     NavHost(
         navController = navController,
@@ -49,13 +53,15 @@ fun DiaVantageApp(
         composable(DiaVantageDestinations.LOGIN_ROUTE) {
             LoginScreen(
                 modifier = modifier,
+                loginRepository = ID.remoteRepository.loginRepository(),
+                checkPatientRepository = ID.remoteRepository.checkPatientRepository(),
                 api = api,
                 onRegisterButtonPressed = { navActions.navigateToRegistration() },
-                onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, token: String?) { if (success) {
-                    loginStateModel.loginUser(username, password, token)
+                onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, patientId: String?) { if (success) {
+                    loginStateModel.loginUser(username, password, patientId)
                     Log.i("Login", loginStateModel.loginState.value.toString())
 
-                    if (api.isPatient()) navActions.navigateToHome() else navActions.navigateToPhysicianHome()
+                     if (loginStateModel.loginState.value.patientId != null) navActions.navigateToHome() else navActions.navigateToPhysicianHome()
                 } },
             )
         }
@@ -81,10 +87,12 @@ fun DiaVantageApp(
                         Log.e("Error", "Logout failed")
                     }
                 },
+                logoutRepository = ID.remoteRepository.logoutRepository(),
             )
         }
         composable(DiaVantageDestinations.HOME_ROUTE) {
             HomeScreen(
+                logoutRepository = ID.remoteRepository.logoutRepository(),
                 api = api,
                 modifier = modifier,
                 onLogoutButtonPressed = fun(success: Boolean) {
