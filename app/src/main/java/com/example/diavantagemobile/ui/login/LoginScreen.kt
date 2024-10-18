@@ -41,12 +41,17 @@ import com.example.diavantagemobile.R
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.api.ID
+import com.example.diavantagemobile.util.data.interfaces.CheckPatientRepository
+import com.example.diavantagemobile.util.data.interfaces.LoginRepository
 
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = viewModel(),
+    loginRepository: LoginRepository,
+    checkPatientRepository: CheckPatientRepository,
     api: DiaVantageApi,
     onSuccessfulLogin: (Boolean, String?, String?, String?) -> Unit,
     onRegisterButtonPressed: () -> Unit = {},
@@ -60,10 +65,15 @@ fun LoginScreen(
                 inputPassword = loginViewModel.inputPassword,
                 onUsernameFilled = { loginViewModel.updateUsername(it) },
                 onPasswordFilled = { loginViewModel.updatePassword(it) },
-                onLoginButtonPressed = { onSuccessfulLogin(
-                    loginViewModel.authenticateUser(api = api),
-                    loginViewModel.inputUsername,
-                    loginViewModel.inputPassword, null)
+                onLoginButtonPressed = {
+                    if(loginViewModel.authenticateUser(loginRepository)){
+                        onSuccessfulLogin(
+                            true,
+                            loginViewModel.inputUsername,
+                            loginViewModel.inputPassword,
+                            loginViewModel.checkPatientStatus(checkPatientRepository)
+                        )
+                    }
                     loginViewModel.resetUserInput()},
                 onRegisterButtonPressed = onRegisterButtonPressed,
                 modifier = modifier
@@ -228,6 +238,8 @@ fun LoginScreenPreview(){
         LoginScreen(
             onSuccessfulLogin = fun (_: Boolean, _: String?, _: String?, _: String?){},
             api = DiaVantageApi(),
+            loginRepository = ID.remoteRepository.loginRepository(),
+            checkPatientRepository = ID.remoteRepository.checkPatientRepository()
         )
     }
 }

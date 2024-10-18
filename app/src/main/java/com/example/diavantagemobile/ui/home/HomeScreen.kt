@@ -28,16 +28,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.api.ID
 import com.example.diavantagemobile.util.data.TopAppBarTypes
+import com.example.diavantagemobile.util.data.interfaces.LogoutRepository
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = viewModel(),
     onLogoutButtonPressed: (Boolean) -> Unit,
     onAccountInfoButtonPressed: () -> Unit,
     onBloodPress: () -> Unit,
@@ -45,14 +50,20 @@ fun HomeScreen(
     onPhysiciansPress: () -> Unit,
     onHistoryPress: () -> Unit,
 
-    api: DiaVantageApi = DiaVantageApi()
+    api: DiaVantageApi = DiaVantageApi(),
+    logoutRepository: LogoutRepository,
 ){
     ScreenScaffoldTemplate (
         topBar = {
             CreateTopAppBar(
                 title = "Home Page",
                 appBarType = TopAppBarTypes.CenterAlignedTopAppBar,
-                actions = { HomeActions(onLogoutButtonPressed, api, modifier) },
+                actions = { HomeActions(
+                    homeViewModel,
+                    logoutRepository,
+                    onLogoutButtonPressed,
+                    api,
+                    modifier) },
                 navigationIcon = { HomeNavigationIcon(onAccountInfoButtonPressed, modifier) },
                 modifier = modifier,
             )
@@ -111,6 +122,8 @@ fun HomeContent(
 
 @Composable
 fun AccountIcon(
+    homeViewModel: HomeViewModel,
+    logoutRepository: LogoutRepository,
     api: DiaVantageApi = DiaVantageApi(),
     onLogoutButtonPressed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -154,7 +167,7 @@ fun AccountIcon(
             )
             DropdownMenuItem(
                 text = { Text("Logout") },
-                onClick = { runBlocking { onLogoutButtonPressed(api.logout()) } },
+                onClick = { runBlocking { onLogoutButtonPressed(homeViewModel.logoutUser(logoutRepository)) } },
                 trailingIcon = {
                     Icon(
                         Icons.AutoMirrored.Filled.KeyboardReturn,
@@ -189,11 +202,15 @@ fun HomeNavigationIcon(
 
 @Composable
 fun HomeActions(
+    homeViewModel: HomeViewModel,
+    logoutRepository: LogoutRepository,
     onLogoutButtonPressed: (Boolean) -> Unit,
     api: DiaVantageApi,
     modifier: Modifier,
 ){
     AccountIcon(
+        homeViewModel = homeViewModel,
+        logoutRepository =  logoutRepository,
         api = api,
         onLogoutButtonPressed = onLogoutButtonPressed,
         modifier = modifier
@@ -211,7 +228,8 @@ fun HomeScreenPreview(){
             onPhysiciansPress = {},
             onBloodPress = {},
             onGlucosePress = {},
-            onHistoryPress = {}
+            onHistoryPress = {},
+            logoutRepository = ID.remoteRepository.logoutRepository()
         )
     }
 }
