@@ -1,6 +1,8 @@
 package com.example.diavantagemobile.util.data.responses
 
+import androidx.compose.runtime.key
 import kotlinx.serialization.Serializable
+import kotlin.reflect.full.memberProperties
 
 
 @Serializable
@@ -25,18 +27,22 @@ data class CsrfResponse(
 )
 
 @Serializable
-data class SendGlucoseResponse(
-    val patient: String,
-    val measurement: String,
-    val measurement_type: String,
-    val measurement_date: String,
-)
+data class FailedSendGlucoseResponse(
+    val patient: List<String>? = null,
+    val measurement: List<String>? = null,
+    val measurement_type: List<String>? = null,
+    val measurement_date: List<String>? = null,
+){
+    fun getFieldsKeys(): List<String>{
+        return FailedSendGlucoseResponse::class.memberProperties.map { it.name }.toList()
+    }
+}
 
 @Serializable
-data class SendBloodResponse(
-    val patient: String,
-    val systolic_pressure: String,
-    val diastolic_pressure: String,
-    val pulse_rate: String,
-    val measurement_date: String,
+data class FailedSendBloodResponse(
+    val patient: List<String>? = null,
+    val systolic_pressure: List<String>? = null,
+    val diastolic_pressure: List<String>? = null,
+    val pulse_rate: List<String>? = null,
+    val measurement_date: List<String>? = null,
 )

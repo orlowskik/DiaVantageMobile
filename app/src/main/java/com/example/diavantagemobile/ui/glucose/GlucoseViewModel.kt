@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
+import com.example.diavantagemobile.util.data.responses.FailedSendGlucoseResponse
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -31,6 +32,11 @@ class GlucoseViewModel : ViewModel(){
         6 to "After Dinner"
     )
 
+    var glucoseResponse by mutableStateOf<FailedSendGlucoseResponse?>(null)
+        private set
+
+    var showCreationDialog by mutableStateOf(false)
+        private set
 
     var inputGlucose by mutableStateOf("")
         private set
@@ -57,6 +63,10 @@ class GlucoseViewModel : ViewModel(){
         Log.i("Set date", inputDate)
     }
 
+    fun toggleDialog(){
+        showCreationDialog = !showCreationDialog
+    }
+
     @SuppressLint("SimpleDateFormat")
     @OptIn(ExperimentalMaterial3Api::class)
     fun updateTime(time: TimePickerState?) {
@@ -64,7 +74,7 @@ class GlucoseViewModel : ViewModel(){
         val formatter = SimpleDateFormat("HH:mm")
 
         cal.set(Calendar.HOUR_OF_DAY, time!!.hour)
-        cal.set(Calendar.MINUTE, time!!.minute)
+        cal.set(Calendar.MINUTE, time.minute)
         cal.isLenient = false
 
         inputTime = formatter.format(cal.time)
@@ -90,7 +100,8 @@ class GlucoseViewModel : ViewModel(){
             measurement = inputGlucose,
             measurementType = inputType.toString(),
             measurementDate = inputDate + "T" + inputTime
-
         )
+        glucoseResponse = result
+        toggleDialog()
     }
 }

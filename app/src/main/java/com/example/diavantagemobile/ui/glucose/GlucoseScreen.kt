@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,10 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
-import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
-import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
+import com.example.diavantagemobile.util.composables.CreationInfo
 import com.example.diavantagemobile.util.composables.DatePickerFieldToModal
 import com.example.diavantagemobile.util.composables.TimePickerField
 import com.example.diavantagemobile.util.data.TopAppBarTypes
@@ -90,14 +88,21 @@ fun GlucoseScreen(
                             glucoseViewModel.sendGlucoseMeasurement(
                             glucoseRepository = glucoseRepository,
                             patient = patientId)
+
                             glucoseViewModel.resetUserInput()
                            },
             modifier = modifier,
         )},
         modifier = modifier,
     )
+    CreationInfo(
+        title = "Glucose measurement creation status",
+        glucoseResponse = glucoseViewModel.glucoseResponse,
+        showDialog = glucoseViewModel.showCreationDialog,
+        onDismissRequest = { glucoseViewModel.toggleDialog() },
+        modifier = modifier
+    )
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,6 +1,7 @@
 package com.example.diavantagemobile.util.data.interfaces
 
-import com.example.diavantagemobile.util.data.responses.SendBloodResponse
+import com.example.diavantagemobile.util.data.responses.FailedSendBloodResponse
+
 
 interface BloodRepository {
     suspend fun sendBloodMeasurement(
@@ -9,5 +10,5 @@ interface BloodRepository {
         diastolic: String,
         pulse: String,
         measurementDate: String,
-    ) : SendBloodResponse?
+    ) : FailedSendBloodResponse?
 }

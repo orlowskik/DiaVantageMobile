@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.espresso.core)
     implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.logging)
+    implementation(kotlin("reflect"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
