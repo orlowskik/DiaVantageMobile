@@ -5,4 +5,5 @@ interface RemoteRepository {
     fun checkPatientRepository(): CheckPatientRepository
     fun logoutRepository(): LogoutRepository
     fun glucoseRepository(): GlucoseRepository
+    fun bloodRepository(): BloodRepository
 }

@@ -8,6 +8,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.diavantagemobile.util.data.interfaces.BloodRepository
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -53,7 +55,7 @@ class BloodViewModel: ViewModel() {
         val formatter = SimpleDateFormat("HH:mm")
 
         cal.set(Calendar.HOUR_OF_DAY, time!!.hour)
-        cal.set(Calendar.MINUTE, time!!.minute)
+        cal.set(Calendar.MINUTE, time.minute)
         cal.isLenient = false
 
         inputTime = formatter.format(cal.time)
@@ -62,7 +64,7 @@ class BloodViewModel: ViewModel() {
     }
 
     private fun convertMillisToDate(millis: Long): String {
-        val formatter = SimpleDateFormat("dd-MM-yyy", Locale.getDefault())
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return formatter.format(Date(millis))
     }
 
@@ -75,5 +77,13 @@ class BloodViewModel: ViewModel() {
         inputTime = ""
     }
 
-
+    fun sendBloodMeasurement(bloodRepository: BloodRepository, patient: String?) = runBlocking {
+        val result = bloodRepository.sendBloodMeasurement(
+            patient = patient,
+            systolic = inputSystolic,
+            diastolic = inputDiastolic,
+            pulse = inputPulse,
+            measurementDate = inputDate + "T" + inputTime
+        )
+    }
 }

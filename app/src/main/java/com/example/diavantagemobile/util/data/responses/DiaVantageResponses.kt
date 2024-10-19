@@ -31,3 +31,12 @@ data class SendGlucoseResponse(
     val measurement_type: String,
     val measurement_date: String,
 )
+
+@Serializable
+data class SendBloodResponse(
+    val patient: String,
+    val systolic_pressure: String,
+    val diastolic_pressure: String,
+    val pulse_rate: String,
+    val measurement_date: String,
+)

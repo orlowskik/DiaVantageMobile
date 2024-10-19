@@ -10,5 +10,6 @@ data class ApiStrings(
     val getCSRF: String = "${hostName}get_csrf/",
     val patientRegister: String = "${hostName}register/patient/",
     val checkPatient: String = "${hostName}api/patients/search_patient/",
-    val glucose: String = "${hostName}api/glucose/"
+    val glucose: String = "${hostName}api/glucose/",
+    val blood: String = "${hostName}api/bloods/",
 )

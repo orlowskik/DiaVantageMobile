@@ -124,7 +124,8 @@ fun DiaVantageApp(
 
         composable(DiaVantageDestinations.BLOOD_ROUTE) {
             BloodScreen(
-                api = api,
+                bloodRepository =ID.remoteRepository.bloodRepository(),
+                patientId = LoginUserInfo.userInfo.getDistinctInfo("patientId"),
                 modifier = modifier,
                 returnToHome = {navActions.navigateToHome()}
             )
