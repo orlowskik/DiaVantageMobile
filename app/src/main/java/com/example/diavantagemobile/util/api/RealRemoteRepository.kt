@@ -6,14 +6,13 @@ import com.example.diavantagemobile.util.api.login.HttpCheckPatientRepository
 import com.example.diavantagemobile.util.api.login.HttpLoginRepository
 import com.example.diavantagemobile.util.api.login.HttpLogoutRepository
 import com.example.diavantagemobile.util.data.ApiStrings
-import com.example.diavantagemobile.util.data.interfaces.BloodRepository
-import com.example.diavantagemobile.util.data.interfaces.CheckPatientRepository
+import com.example.diavantagemobile.util.api.blood.BloodRepository
+import com.example.diavantagemobile.util.api.login.CheckPatientRepository
 import com.example.diavantagemobile.util.data.interfaces.CredentialsStorage
-import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
-import com.example.diavantagemobile.util.data.interfaces.LoginRepository
-import com.example.diavantagemobile.util.data.interfaces.LogoutRepository
+import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
+import com.example.diavantagemobile.util.api.login.LoginRepository
+import com.example.diavantagemobile.util.api.login.LogoutRepository
 import com.example.diavantagemobile.util.data.interfaces.RemoteRepository
-import com.example.diavantagemobile.util.data.storages.BasicCredentialStorage
 import io.ktor.client.HttpClient
 
 internal class RealRemoteRepository(

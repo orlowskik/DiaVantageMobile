@@ -1,7 +1,7 @@
 package com.example.diavantagemobile.util.data.storages
 
-import com.example.diavantagemobile.util.data.credentials.BasicCredentials
-import com.example.diavantagemobile.util.data.credentials.Credentials
+import com.example.diavantagemobile.util.api.credentials.BasicCredentials
+import com.example.diavantagemobile.util.api.credentials.Credentials
 import com.example.diavantagemobile.util.data.interfaces.CredentialsStorage
 
 internal class BasicCredentialStorage : CredentialsStorage{

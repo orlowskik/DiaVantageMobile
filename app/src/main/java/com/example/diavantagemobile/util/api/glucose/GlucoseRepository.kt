@@ -1,6 +1,6 @@
-package com.example.diavantagemobile.util.data.interfaces
+package com.example.diavantagemobile.util.api.glucose
 
-import com.example.diavantagemobile.util.data.responses.FailedSendGlucoseResponse
+import com.example.diavantagemobile.util.api.responses.FailedSendGlucoseResponse
 
 
 interface GlucoseRepository {

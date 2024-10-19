@@ -2,9 +2,8 @@ package com.example.diavantagemobile.util.api.glucose
 
 import android.util.Log
 import com.example.diavantagemobile.util.data.ApiStrings
-import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
-import com.example.diavantagemobile.util.data.responses.CsrfResponse
-import com.example.diavantagemobile.util.data.responses.FailedSendGlucoseResponse
+import com.example.diavantagemobile.util.api.responses.CsrfResponse
+import com.example.diavantagemobile.util.api.responses.FailedSendGlucoseResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie

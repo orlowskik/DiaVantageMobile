@@ -1,4 +1,4 @@
-package com.example.diavantagemobile.util.data.responses
+package com.example.diavantagemobile.util.api.responses
 
 import androidx.compose.runtime.key
 import kotlinx.serialization.Serializable

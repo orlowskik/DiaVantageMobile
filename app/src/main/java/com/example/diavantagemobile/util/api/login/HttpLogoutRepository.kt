@@ -3,22 +3,19 @@ package com.example.diavantagemobile.util.api.login
 import android.util.Log
 import com.example.diavantagemobile.util.data.ApiStrings
 import com.example.diavantagemobile.util.data.interfaces.CredentialsStorage
-import com.example.diavantagemobile.util.data.interfaces.LogoutRepository
-import com.example.diavantagemobile.util.data.responses.CsrfResponse
-import com.example.diavantagemobile.util.data.responses.LogoutResponse
+import com.example.diavantagemobile.util.api.responses.CsrfResponse
+import com.example.diavantagemobile.util.api.responses.LogoutResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
 import io.ktor.client.request.header
 import io.ktor.client.request.post
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 
 class HttpLogoutRepository(
     private val client: HttpClient,
     private val credentialsStorage: CredentialsStorage,
     private val apiStrings: ApiStrings = ApiStrings()
-) : LogoutRepository{
+) : LogoutRepository {
     override suspend fun logout(): Boolean {
         val token = client.post(apiStrings.getCSRF).body<CsrfResponse>()
 

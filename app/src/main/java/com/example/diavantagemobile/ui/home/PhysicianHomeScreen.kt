@@ -23,8 +23,7 @@ import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
 import com.example.diavantagemobile.util.data.TopAppBarTypes
-import com.example.diavantagemobile.util.data.interfaces.LogoutRepository
-import kotlinx.coroutines.runBlocking
+import com.example.diavantagemobile.util.api.login.LogoutRepository
 
 @Composable
 fun PhysicianHomeScreen(

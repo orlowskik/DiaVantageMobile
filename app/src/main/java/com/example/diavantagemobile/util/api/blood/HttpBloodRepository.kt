@@ -2,9 +2,8 @@ package com.example.diavantagemobile.util.api.blood
 
 import android.util.Log
 import com.example.diavantagemobile.util.data.ApiStrings
-import com.example.diavantagemobile.util.data.interfaces.BloodRepository
-import com.example.diavantagemobile.util.data.responses.CsrfResponse
-import com.example.diavantagemobile.util.data.responses.FailedSendBloodResponse
+import com.example.diavantagemobile.util.api.responses.CsrfResponse
+import com.example.diavantagemobile.util.api.responses.FailedSendBloodResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie

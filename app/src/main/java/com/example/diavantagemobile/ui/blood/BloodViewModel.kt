@@ -1,22 +1,12 @@
 package com.example.diavantagemobile.ui.blood
 
-import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TimePickerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import com.example.diavantagemobile.ui.interfaces.MeasurementViewModel
-import com.example.diavantagemobile.util.data.interfaces.BloodRepository
-import com.example.diavantagemobile.util.data.responses.FailedSendBloodResponse
-import com.example.diavantagemobile.util.data.responses.FailedSendGlucoseResponse
+import com.example.diavantagemobile.util.api.blood.BloodRepository
+import com.example.diavantagemobile.util.api.responses.FailedSendBloodResponse
 import kotlinx.coroutines.runBlocking
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 class BloodViewModel: MeasurementViewModel() {
 

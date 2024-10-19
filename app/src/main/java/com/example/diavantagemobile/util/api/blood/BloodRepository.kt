@@ -1,6 +1,6 @@
-package com.example.diavantagemobile.util.data.interfaces
+package com.example.diavantagemobile.util.api.blood
 
-import com.example.diavantagemobile.util.data.responses.FailedSendBloodResponse
+import com.example.diavantagemobile.util.api.responses.FailedSendBloodResponse
 
 
 interface BloodRepository {

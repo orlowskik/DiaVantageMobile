@@ -42,7 +42,7 @@ import com.example.diavantagemobile.util.composables.CreationInfo
 import com.example.diavantagemobile.util.composables.DatePickerFieldToModal
 import com.example.diavantagemobile.util.composables.TimePickerField
 import com.example.diavantagemobile.util.data.TopAppBarTypes
-import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
+import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,7 +55,7 @@ fun GlucoseScreen(
     patientId: String?,
 
 
-){
+    ){
     ScreenScaffoldTemplate(
         topBar = {
             CreateTopAppBar(

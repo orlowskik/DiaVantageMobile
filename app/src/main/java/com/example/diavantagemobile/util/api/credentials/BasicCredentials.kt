@@ -1,4 +1,4 @@
-package com.example.diavantagemobile.util.data.credentials
+package com.example.diavantagemobile.util.api.credentials
 
 data class BasicCredentials(
     private var username: String,

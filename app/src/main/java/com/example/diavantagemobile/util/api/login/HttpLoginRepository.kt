@@ -2,11 +2,10 @@ package com.example.diavantagemobile.util.api.login
 
 import android.util.Log
 import com.example.diavantagemobile.util.data.ApiStrings
-import com.example.diavantagemobile.util.data.responses.LoginResponse
-import com.example.diavantagemobile.util.data.credentials.BasicCredentials
+import com.example.diavantagemobile.util.api.responses.LoginResponse
+import com.example.diavantagemobile.util.api.credentials.BasicCredentials
 import com.example.diavantagemobile.util.data.interfaces.CredentialsStorage
-import com.example.diavantagemobile.util.data.interfaces.LoginRepository
-import com.example.diavantagemobile.util.data.responses.CsrfResponse
+import com.example.diavantagemobile.util.api.responses.CsrfResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
@@ -20,9 +19,10 @@ class HttpLoginRepository(
     private val client: HttpClient,
     private val credentialStorage: CredentialsStorage,
     private val apiStrings: ApiStrings = ApiStrings(),
-) : LoginRepository{
+) : LoginRepository {
     override suspend fun login(username: String, password: String): LoginResponse? {
         Log.i("Send Credentials", "Sending credentials")
+
         val token = client.post(apiStrings.getCSRF).body<CsrfResponse>()
 
         val response: HttpResponse = client.submitForm(

@@ -1,6 +1,6 @@
 package com.example.diavantagemobile.util.data.interfaces
 
-import com.example.diavantagemobile.util.data.credentials.Credentials
+import com.example.diavantagemobile.util.api.credentials.Credentials
 
 
 interface CredentialsStorage {

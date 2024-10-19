@@ -40,10 +40,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.R
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
-import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
-import com.example.diavantagemobile.util.data.interfaces.CheckPatientRepository
-import com.example.diavantagemobile.util.data.interfaces.LoginRepository
+import com.example.diavantagemobile.util.api.login.CheckPatientRepository
+import com.example.diavantagemobile.util.api.login.LoginRepository
+import com.example.diavantagemobile.util.composables.ErrorDialogField
 
 
 @Composable
@@ -79,7 +79,11 @@ fun LoginScreen(
             )
         }
     )
-
+    ErrorDialogField(
+        title = "Login Error",
+        apiViewModel = loginViewModel,
+        modifier = modifier
+    )
 }
 
 

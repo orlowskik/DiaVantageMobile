@@ -2,8 +2,8 @@ package com.example.diavantagemobile.util.api
 
 import android.util.Log
 import com.example.diavantagemobile.util.data.ApiStrings
-import com.example.diavantagemobile.util.data.responses.CheckPatientResponse
-import com.example.diavantagemobile.util.data.credentials.BasicCredentials
+import com.example.diavantagemobile.util.api.responses.CheckPatientResponse
+import com.example.diavantagemobile.util.api.credentials.BasicCredentials
 import com.example.diavantagemobile.util.data.interfaces.CredentialsStorage
 import com.example.diavantagemobile.util.data.storages.BasicCredentialStorage
 import io.ktor.client.HttpClient
