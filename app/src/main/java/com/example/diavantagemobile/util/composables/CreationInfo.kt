@@ -17,7 +17,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -72,7 +71,50 @@ fun CreateContent(
                 modifier = modifier,
             )
         }
+        if (bloodResponse != null) {
+            CreateBloodResponseText(
+                bloodResponse = bloodResponse,
+                modifier = modifier,
+            )
+        }
     }
+}
+
+@Composable
+fun CreateBloodResponseText(
+    bloodResponse: FailedSendBloodResponse,
+    modifier: Modifier = Modifier
+){
+    val keys = bloodResponse.getFieldsKeys()
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+    ){
+        for ( field in bloodResponse.javaClass.declaredFields ){
+            field.isAccessible = true;
+            if (field.name in keys){
+                field.get(bloodResponse)?.let {
+                    Row (
+                        horizontalArrangement = Arrangement.Start,
+                        modifier = modifier
+                            .fillMaxWidth(),
+                    ){
+                        Text(
+                            text = "${field.name}: ",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                        Text(
+                            text = it.toString(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 

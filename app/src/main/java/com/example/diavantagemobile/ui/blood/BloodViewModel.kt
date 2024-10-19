@@ -8,14 +8,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.diavantagemobile.ui.interfaces.MeasurementViewModel
 import com.example.diavantagemobile.util.data.interfaces.BloodRepository
+import com.example.diavantagemobile.util.data.responses.FailedSendBloodResponse
+import com.example.diavantagemobile.util.data.responses.FailedSendGlucoseResponse
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class BloodViewModel: ViewModel() {
+class BloodViewModel: MeasurementViewModel() {
+
+    var bloodResponse by mutableStateOf<FailedSendBloodResponse?>(null)
+        private set
+
     var inputSystolic by mutableStateOf("")
         private set
 
@@ -23,12 +30,6 @@ class BloodViewModel: ViewModel() {
         private set
 
     var inputPulse by mutableStateOf("")
-        private set
-
-    var inputDate by mutableStateOf("")
-        private set
-
-    var inputTime by mutableStateOf("")
         private set
 
     fun updateSystolic(systolic: String){
@@ -43,38 +44,11 @@ class BloodViewModel: ViewModel() {
         inputPulse = pulse
     }
 
-    fun updateDate(millis: Long?){
-        inputDate = millis?.let { convertMillisToDate(it) } ?: ""
-        Log.i("Set date", inputDate)
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateTime(time: TimePickerState?) {
-        val cal = Calendar.getInstance()
-        val formatter = SimpleDateFormat("HH:mm")
-
-        cal.set(Calendar.HOUR_OF_DAY, time!!.hour)
-        cal.set(Calendar.MINUTE, time.minute)
-        cal.isLenient = false
-
-        inputTime = formatter.format(cal.time)
-        Log.i("Set time", inputTime)
-
-    }
-
-    private fun convertMillisToDate(millis: Long): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        return formatter.format(Date(millis))
-    }
-
-
-    fun resetUserInput(){
+    override fun resetUserInput(){
+        super.resetUserInput()
         inputSystolic = ""
         inputDiastolic = ""
         inputPulse = ""
-        inputDate = ""
-        inputTime = ""
     }
 
     fun sendBloodMeasurement(bloodRepository: BloodRepository, patient: String?) = runBlocking {
@@ -85,5 +59,7 @@ class BloodViewModel: ViewModel() {
             pulse = inputPulse,
             measurementDate = inputDate + "T" + inputTime
         )
+        bloodResponse = result
+        toggleDialog()
     }
 }

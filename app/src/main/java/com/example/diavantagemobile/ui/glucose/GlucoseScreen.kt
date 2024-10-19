@@ -83,13 +83,16 @@ fun GlucoseScreen(
             onTypeChange = fun(type: Int){ glucoseViewModel.updateType(type)},
             onDateChange = fun(millis: Long?) { glucoseViewModel.updateDate(millis) },
             onTimeChange = fun(time: TimePickerState?) { glucoseViewModel.updateTime(time) },
-            onResetButton = { glucoseViewModel.resetUserInput() },
+            onResetButton = {
+                            glucoseViewModel.resetUserInput()
+
+                            },
             onSendButton = {
                             glucoseViewModel.sendGlucoseMeasurement(
                             glucoseRepository = glucoseRepository,
                             patient = patientId)
 
-                            glucoseViewModel.resetUserInput()
+                            glucoseViewModel.updateGlucose("")
                            },
             modifier = modifier,
         )},

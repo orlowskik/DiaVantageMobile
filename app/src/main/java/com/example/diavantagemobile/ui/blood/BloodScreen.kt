@@ -29,6 +29,7 @@ import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
+import com.example.diavantagemobile.util.composables.CreationInfo
 import com.example.diavantagemobile.util.composables.DatePickerFieldToModal
 import com.example.diavantagemobile.util.composables.TimePickerField
 import com.example.diavantagemobile.util.data.TopAppBarTypes
@@ -84,6 +85,13 @@ fun BloodScreen(
             modifier = modifier,
         )},
         modifier = modifier,
+    )
+    CreationInfo(
+        title = "Blood measurement creation status",
+        bloodResponse = bloodViewModel.bloodResponse,
+        showDialog = bloodViewModel.showCreationDialog,
+        onDismissRequest = { bloodViewModel.toggleDialog() },
+        modifier = modifier
     )
 }
 

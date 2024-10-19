@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.diavantagemobile.ui.interfaces.MeasurementViewModel
 import com.example.diavantagemobile.util.data.interfaces.GlucoseRepository
 import com.example.diavantagemobile.util.data.responses.FailedSendGlucoseResponse
 import kotlinx.coroutines.runBlocking
@@ -20,7 +21,7 @@ import java.util.EnumSet
 import java.util.Locale
 
 
-class GlucoseViewModel : ViewModel(){
+class GlucoseViewModel : MeasurementViewModel() {
 
     val typesMap = mapOf(
         0 to "undefined",
@@ -35,19 +36,10 @@ class GlucoseViewModel : ViewModel(){
     var glucoseResponse by mutableStateOf<FailedSendGlucoseResponse?>(null)
         private set
 
-    var showCreationDialog by mutableStateOf(false)
-        private set
-
     var inputGlucose by mutableStateOf("")
         private set
 
     var inputType by mutableIntStateOf(0)
-        private set
-
-    var inputDate by mutableStateOf("")
-        private set
-
-    var inputTime by mutableStateOf("")
         private set
 
     fun updateGlucose(glucose: String){
@@ -58,40 +50,10 @@ class GlucoseViewModel : ViewModel(){
         inputType = type
     }
 
-    fun updateDate(millis: Long?){
-        inputDate = millis?.let { convertMillisToDate(it) } ?: ""
-        Log.i("Set date", inputDate)
-    }
-
-    fun toggleDialog(){
-        showCreationDialog = !showCreationDialog
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    @OptIn(ExperimentalMaterial3Api::class)
-    fun updateTime(time: TimePickerState?) {
-        val cal = Calendar.getInstance()
-        val formatter = SimpleDateFormat("HH:mm")
-
-        cal.set(Calendar.HOUR_OF_DAY, time!!.hour)
-        cal.set(Calendar.MINUTE, time.minute)
-        cal.isLenient = false
-
-        inputTime = formatter.format(cal.time)
-        Log.i("Set time", inputTime)
-
-    }
-
-    private fun convertMillisToDate(millis: Long): String {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        return formatter.format(Date(millis))
-    }
-
-    fun resetUserInput(){
+    override fun resetUserInput(){
+        super.resetUserInput()
         inputGlucose = ""
         inputType = 0
-        inputDate = ""
-        inputTime = ""
     }
 
     fun sendGlucoseMeasurement(glucoseRepository: GlucoseRepository, patient: String?) = runBlocking{

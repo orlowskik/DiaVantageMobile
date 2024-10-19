@@ -45,4 +45,9 @@ data class FailedSendBloodResponse(
     val diastolic_pressure: List<String>? = null,
     val pulse_rate: List<String>? = null,
     val measurement_date: List<String>? = null,
-)
+){
+    fun getFieldsKeys(): List<String>{
+        return FailedSendBloodResponse::class.memberProperties.map { it.name }.toList()
+    }
+
+}
