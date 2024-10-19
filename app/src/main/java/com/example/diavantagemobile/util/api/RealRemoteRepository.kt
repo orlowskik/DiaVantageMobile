@@ -21,7 +21,7 @@ internal class RealRemoteRepository(
     private val credentialStorage: CredentialsStorage,
     private val apiStrings: ApiStrings = ApiStrings(),
 ) : RemoteRepository{
-    override fun loginRepository(): LoginRepository = HttpLoginRepository(client, credentialStorage, apiStrings.login )
+    override fun loginRepository(): LoginRepository = HttpLoginRepository(client, credentialStorage, apiStrings )
     override fun logoutRepository(): LogoutRepository = HttpLogoutRepository(client, credentialStorage, apiStrings)
     override fun checkPatientRepository(): CheckPatientRepository = HttpCheckPatientRepository(client, apiStrings.checkPatient)
     override fun glucoseRepository(): GlucoseRepository = HttpGlucoseRepository(client, apiStrings)

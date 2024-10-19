@@ -10,7 +10,7 @@ class UserInfoProvider (
         return userInfoStorage.getInfo()[key]
     }
 
-    fun getInfo(): Map<String, String>{
+    fun getInfo(): Map<String, String?>{
         return userInfoStorage.getInfo()
     }
 

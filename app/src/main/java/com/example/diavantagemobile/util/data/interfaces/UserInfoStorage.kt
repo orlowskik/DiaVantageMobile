@@ -7,5 +7,5 @@ interface UserInfoStorage {
         inputPatientId: String?,
     )
 
-    fun getInfo(): Map<String,String>
+    fun getInfo(): Map<String,String?>
 }

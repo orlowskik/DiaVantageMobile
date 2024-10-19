@@ -52,7 +52,6 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
     loginRepository: LoginRepository,
     checkPatientRepository: CheckPatientRepository,
-    api: DiaVantageApi,
     onSuccessfulLogin: (Boolean, String?, String?, String?) -> Unit,
     onRegisterButtonPressed: () -> Unit = {},
 ){
@@ -237,7 +236,6 @@ fun LoginScreenPreview(){
     DiaVantageMobileTheme {
         LoginScreen(
             onSuccessfulLogin = fun (_: Boolean, _: String?, _: String?, _: String?){},
-            api = DiaVantageApi(),
             loginRepository = ID.remoteRepository.loginRepository(),
             checkPatientRepository = ID.remoteRepository.checkPatientRepository()
         )

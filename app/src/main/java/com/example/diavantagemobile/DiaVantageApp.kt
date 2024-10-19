@@ -20,7 +20,6 @@ import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.home.PhysicianHomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
-import com.example.diavantagemobile.util.LoginStateModel
 import com.example.diavantagemobile.util.LoginUserInfo
 import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
@@ -37,7 +36,6 @@ fun DiaVantageApp(
     navActions: DiaVantageNavigationActions = remember(navController) {
         DiaVantageNavigationActions(navController)
     },
-    loginStateModel: LoginStateModel = LoginStateModel(),
 ) {
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentNavBackStackEntry?.destination?.route ?: startDestination
@@ -56,7 +54,6 @@ fun DiaVantageApp(
                 modifier = modifier,
                 loginRepository = ID.remoteRepository.loginRepository(),
                 checkPatientRepository = ID.remoteRepository.checkPatientRepository(),
-                api = api,
                 onRegisterButtonPressed = { navActions.navigateToRegistration() },
                 onSuccessfulLogin = fun (success: Boolean, username: String?, password: String?, patientId: String?) { if (success) {
                     LoginUserInfo.userInfo.updateUserInfo(username, password, patientId)
@@ -81,8 +78,8 @@ fun DiaVantageApp(
                 onAccountInfoButtonPressed = {},
                 onLogoutButtonPressed = fun(success: Boolean) {
                     if (success) {
-                        loginStateModel.logoutUser()
-                        Log.i("Logout", loginStateModel.loginState.value.toString())
+                        LoginUserInfo.userInfo.updateUserInfo(null, null, null)
+                        Log.i("Logout", LoginUserInfo.userInfo.getInfo().toString())
                         navActions.navigateToLogin()
                     } else {
                         Log.e("Error", "Logout failed")
@@ -98,7 +95,7 @@ fun DiaVantageApp(
                 modifier = modifier,
                 onLogoutButtonPressed = fun(success: Boolean) {
                     if (success) {
-                        loginStateModel.logoutUser()
+                        LoginUserInfo.userInfo.updateUserInfo(null, null, null)
                         Log.i("Logout", LoginUserInfo.userInfo.getInfo().toString())
                         navActions.navigateToLogin()
                     } else {

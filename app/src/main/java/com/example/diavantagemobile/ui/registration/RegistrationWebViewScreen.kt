@@ -20,7 +20,7 @@ import com.example.diavantagemobile.util.api.DiaVantageApi
 @Composable
 fun RegistrationWebView(
     modifier: Modifier = Modifier,
-    api: DiaVantageApi = DiaVantageApi(),
+    api: DiaVantageApi,
 ) {
     AndroidView(
         factory = { context ->
@@ -46,7 +46,7 @@ fun RegistrationWebView(
 @Composable
 fun RegistrationScreen(
     modifier: Modifier = Modifier,
-    api: DiaVantageApi = DiaVantageApi(),
+    api: DiaVantageApi,
     returnToLogin: () -> Unit = {},
 ){
     ScreenScaffoldTemplate(
@@ -74,6 +74,8 @@ fun RegistrationScreen(
 @Preview(showBackground = true)
 fun RegistrationScreenPreview(){
     DiaVantageMobileTheme {
-        RegistrationScreen()
+        RegistrationScreen(
+            api = DiaVantageApi( httpClient = io.ktor.client.HttpClient(io.ktor.client.engine.cio.CIO){}),
+        )
     }
 }
