@@ -7,6 +7,7 @@ import com.example.diavantagemobile.DiaVantageScreens.BLOOD_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.GLUCOSE_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.HOME_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.LOGIN_SCREEN
+import com.example.diavantagemobile.DiaVantageScreens.PHYSICIANS_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.PHYSICIAN_HOME_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.REGISTRATION_SCREEN
 import com.example.diavantagemobile.ui.blood.BloodScreen
@@ -19,6 +20,7 @@ private object DiaVantageScreens {
     const val REGISTRATION_SCREEN = "registration"
     const val GLUCOSE_SCREEN = "glucose"
     const val BLOOD_SCREEN = "blood"
+    const val PHYSICIANS_SCREEN = "physicians"
 }
 
 object DiaVantageDestinationsArgs {
@@ -31,6 +33,7 @@ object DiaVantageDestinations {
     const val REGISTRATION_ROUTE = "$REGISTRATION_SCREEN?"
     const val GLUCOSE_ROUTE = "$GLUCOSE_SCREEN?"
     const val BLOOD_ROUTE = "$BLOOD_SCREEN?"
+    const val PHYSICIANS_ROUTE = "$PHYSICIANS_SCREEN?"
     const val PHYSICIAN_HOME_ROUTE = "$PHYSICIAN_HOME_SCREEN?"
 }
 
@@ -90,6 +93,15 @@ class DiaVantageNavigationActions(private val navController: NavHostController) 
 
     fun navigateToBlood(){
         navController.navigate(BLOOD_SCREEN){
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+        }
+    }
+
+    fun navigateToPhysicians(){
+        navController.navigate(PHYSICIANS_SCREEN) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }

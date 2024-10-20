@@ -46,13 +46,19 @@ class GlucoseViewModel : MeasurementViewModel() {
     }
 
     fun sendGlucoseMeasurement(glucoseRepository: GlucoseRepository, patient: String?) = runBlocking{
-        val result = glucoseRepository.sendGlucoseMeasurement(
-            patient = patient,
-            measurement = inputGlucose,
-            measurementType = inputType.toString(),
-            measurementDate = inputDate + "T" + inputTime
-        )
-        glucoseResponse = result
-        toggleDialog()
+        try {
+            val result = glucoseRepository.sendGlucoseMeasurement(
+                patient = patient,
+                measurement = inputGlucose,
+                measurementType = inputType.toString(),
+                measurementDate = inputDate + "T" + inputTime
+            )
+            glucoseResponse = result
+            toggleDialog()
+        } catch (e: Exception) {
+            errorName = e.javaClass.simpleName
+            errorMessage = e.message
+            toggleErrorDialog()
+        }
     }
 }

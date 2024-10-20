@@ -33,6 +33,7 @@ import com.example.diavantagemobile.util.composables.DatePickerFieldToModal
 import com.example.diavantagemobile.util.composables.TimePickerField
 import com.example.diavantagemobile.util.data.TopAppBarTypes
 import com.example.diavantagemobile.util.api.blood.BloodRepository
+import com.example.diavantagemobile.util.composables.ErrorDialogField
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +91,11 @@ fun BloodScreen(
         bloodResponse = bloodViewModel.bloodResponse,
         showDialog = bloodViewModel.showCreationDialog,
         onDismissRequest = { bloodViewModel.toggleDialog() },
+        modifier = modifier
+    )
+    ErrorDialogField(
+        title = "Blood measurement Error",
+        apiViewModel = bloodViewModel,
         modifier = modifier
     )
 }

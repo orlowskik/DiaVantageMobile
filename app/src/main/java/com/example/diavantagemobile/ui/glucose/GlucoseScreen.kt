@@ -43,6 +43,7 @@ import com.example.diavantagemobile.util.composables.DatePickerFieldToModal
 import com.example.diavantagemobile.util.composables.TimePickerField
 import com.example.diavantagemobile.util.data.TopAppBarTypes
 import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
+import com.example.diavantagemobile.util.composables.ErrorDialogField
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,6 +104,12 @@ fun GlucoseScreen(
         glucoseResponse = glucoseViewModel.glucoseResponse,
         showDialog = glucoseViewModel.showCreationDialog,
         onDismissRequest = { glucoseViewModel.toggleDialog() },
+        modifier = modifier
+    )
+
+    ErrorDialogField(
+        title = "Glucose measurement Error",
+        apiViewModel = glucoseViewModel,
         modifier = modifier
     )
 }

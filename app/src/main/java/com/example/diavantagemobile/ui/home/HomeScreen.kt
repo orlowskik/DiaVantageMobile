@@ -32,7 +32,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
-import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
 import com.example.diavantagemobile.util.data.TopAppBarTypes
 import com.example.diavantagemobile.util.api.login.LogoutRepository
@@ -49,7 +48,6 @@ fun HomeScreen(
     onPhysiciansPress: () -> Unit,
     onHistoryPress: () -> Unit,
 
-    api: DiaVantageApi = DiaVantageApi(),
     logoutRepository: LogoutRepository,
 ){
     ScreenScaffoldTemplate (
@@ -61,7 +59,6 @@ fun HomeScreen(
                     homeViewModel,
                     logoutRepository,
                     onLogoutButtonPressed,
-                    api,
                     modifier) },
                 navigationIcon = { HomeNavigationIcon(onAccountInfoButtonPressed, modifier) },
                 modifier = modifier,
@@ -123,7 +120,6 @@ fun HomeContent(
 fun AccountIcon(
     homeViewModel: HomeViewModel,
     logoutRepository: LogoutRepository,
-    api: DiaVantageApi = DiaVantageApi(),
     onLogoutButtonPressed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -204,13 +200,11 @@ fun HomeActions(
     homeViewModel: HomeViewModel,
     logoutRepository: LogoutRepository,
     onLogoutButtonPressed: (Boolean) -> Unit,
-    api: DiaVantageApi,
     modifier: Modifier,
 ){
     AccountIcon(
         homeViewModel = homeViewModel,
         logoutRepository =  logoutRepository,
-        api = api,
         onLogoutButtonPressed = onLogoutButtonPressed,
         modifier = modifier
     )

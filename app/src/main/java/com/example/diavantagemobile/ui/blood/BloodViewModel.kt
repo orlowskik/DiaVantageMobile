@@ -42,14 +42,20 @@ class BloodViewModel: MeasurementViewModel() {
     }
 
     fun sendBloodMeasurement(bloodRepository: BloodRepository, patient: String?) = runBlocking {
-        val result = bloodRepository.sendBloodMeasurement(
-            patient = patient,
-            systolic = inputSystolic,
-            diastolic = inputDiastolic,
-            pulse = inputPulse,
-            measurementDate = inputDate + "T" + inputTime
-        )
-        bloodResponse = result
-        toggleDialog()
+        try {
+            val result = bloodRepository.sendBloodMeasurement(
+                patient = patient,
+                systolic = inputSystolic,
+                diastolic = inputDiastolic,
+                pulse = inputPulse,
+                measurementDate = inputDate + "T" + inputTime
+            )
+            bloodResponse = result
+            toggleDialog()
+        } catch (e: Exception) {
+            errorName = e.javaClass.simpleName
+            errorMessage = e.message
+            toggleErrorDialog()
+        }
     }
 }

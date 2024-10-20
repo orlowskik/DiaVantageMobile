@@ -13,14 +13,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
-import com.example.diavantagemobile.util.api.DiaVantageApi
+import com.example.diavantagemobile.util.data.ApiStrings
 
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun RegistrationWebView(
     modifier: Modifier = Modifier,
-    api: DiaVantageApi,
+    apiStrings: ApiStrings = ApiStrings(),
 ) {
     AndroidView(
         factory = { context ->
@@ -36,7 +36,7 @@ fun RegistrationWebView(
             }
         },
         update = { webView ->
-            webView.loadUrl(api.apiStrings.patientRegister)
+            webView.loadUrl(apiStrings.patientRegister)
         },
         modifier = modifier
             .fillMaxSize()
@@ -46,7 +46,6 @@ fun RegistrationWebView(
 @Composable
 fun RegistrationScreen(
     modifier: Modifier = Modifier,
-    api: DiaVantageApi,
     returnToLogin: () -> Unit = {},
 ){
     ScreenScaffoldTemplate(
@@ -55,7 +54,6 @@ fun RegistrationScreen(
         content = {
             RegistrationWebView(
                 modifier = modifier,
-                api = api,
             )
         },
         navigationIcon = {
@@ -75,7 +73,6 @@ fun RegistrationScreen(
 fun RegistrationScreenPreview(){
     DiaVantageMobileTheme {
         RegistrationScreen(
-            api = DiaVantageApi( httpClient = io.ktor.client.HttpClient(io.ktor.client.engine.cio.CIO){}),
         )
     }
 }

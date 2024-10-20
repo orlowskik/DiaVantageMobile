@@ -1,46 +1,35 @@
 package com.example.diavantagemobile
 
 import android.util.Log
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.diavantagemobile.ui.blood.BloodScreen
 import com.example.diavantagemobile.ui.glucose.GlucoseScreen
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.home.PhysicianHomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
+import com.example.diavantagemobile.ui.physicians.PhysiciansScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
 import com.example.diavantagemobile.util.LoginUserInfo
-import com.example.diavantagemobile.util.api.DiaVantageApi
 import com.example.diavantagemobile.util.api.ID
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun DiaVantageApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     startDestination: String = DiaVantageDestinations.LOGIN_ROUTE,
     navActions: DiaVantageNavigationActions = remember(navController) {
         DiaVantageNavigationActions(navController)
     },
 ) {
-    val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = currentNavBackStackEntry?.destination?.route ?: startDestination
-
-    val api = DiaVantageApi()
 
 
 
@@ -66,7 +55,6 @@ fun DiaVantageApp(
         composable(DiaVantageDestinations.REGISTRATION_ROUTE) {
             RegistrationScreen(
                 modifier = modifier,
-                api = api,
                 returnToLogin = { navActions.navigateToLogin() }
             )
         }
@@ -74,7 +62,6 @@ fun DiaVantageApp(
         composable(DiaVantageDestinations.PHYSICIAN_HOME_ROUTE){
             PhysicianHomeScreen(
                 modifier = modifier,
-                api = api,
                 onAccountInfoButtonPressed = {},
                 onLogoutButtonPressed = fun(success: Boolean) {
                     if (success) {
@@ -91,7 +78,6 @@ fun DiaVantageApp(
         composable(DiaVantageDestinations.HOME_ROUTE) {
             HomeScreen(
                 logoutRepository = ID.remoteRepository.logoutRepository(),
-                api = api,
                 modifier = modifier,
                 onLogoutButtonPressed = fun(success: Boolean) {
                     if (success) {
@@ -105,7 +91,7 @@ fun DiaVantageApp(
                 onAccountInfoButtonPressed = {},
                 onGlucosePress = { navActions.navigateToGlucose() },
                 onBloodPress = { navActions.navigateToBlood() },
-                onPhysiciansPress = {},
+                onPhysiciansPress = { navActions.navigateToPhysicians() },
                 onHistoryPress = {},
             )
         }
@@ -127,5 +113,14 @@ fun DiaVantageApp(
                 returnToHome = {navActions.navigateToHome()}
             )
         }
+
+        composable(DiaVantageDestinations.PHYSICIANS_ROUTE) {
+            PhysiciansScreen(
+                modifier = modifier,
+                physiciansRepository = ID.remoteRepository.physiciansRepository(),
+                returnToHome = {navActions.navigateToHome()}
+            )
+        }
+
     }
 }

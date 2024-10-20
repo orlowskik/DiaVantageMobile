@@ -12,4 +12,5 @@ data class ApiStrings(
     val checkPatient: String = "${hostName}api/patients/search_patient/",
     val glucose: String = "${hostName}api/glucose/",
     val blood: String = "${hostName}api/bloods/",
+    val physicians: String = "${hostName}api/physicians/",
 )

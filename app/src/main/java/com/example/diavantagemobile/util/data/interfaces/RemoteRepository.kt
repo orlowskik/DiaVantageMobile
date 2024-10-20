@@ -5,6 +5,7 @@ import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
 import com.example.diavantagemobile.util.api.login.CheckPatientRepository
 import com.example.diavantagemobile.util.api.login.LoginRepository
 import com.example.diavantagemobile.util.api.login.LogoutRepository
+import com.example.diavantagemobile.util.api.physicians.PhysiciansRepository
 
 interface RemoteRepository {
     fun loginRepository(): LoginRepository
@@ -12,4 +13,5 @@ interface RemoteRepository {
     fun logoutRepository(): LogoutRepository
     fun glucoseRepository(): GlucoseRepository
     fun bloodRepository(): BloodRepository
+    fun physiciansRepository(): PhysiciansRepository
 }

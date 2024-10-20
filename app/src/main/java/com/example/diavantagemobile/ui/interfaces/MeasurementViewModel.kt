@@ -45,7 +45,6 @@ open class MeasurementViewModel : APIViewModel() {
 
     }
 
-
     private fun convertMillisToDate(millis: Long): String {
         return dateFormatter.format(Date(millis))
     }
@@ -60,6 +59,8 @@ open class MeasurementViewModel : APIViewModel() {
         inputDate = dateFormatter.format(Date(cal.timeInMillis))
         inputTime = timeFormatter.format(cal.time)
     }
+
+
 
 
 }

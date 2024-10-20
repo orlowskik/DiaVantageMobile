@@ -12,6 +12,8 @@ import com.example.diavantagemobile.util.data.interfaces.CredentialsStorage
 import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
 import com.example.diavantagemobile.util.api.login.LoginRepository
 import com.example.diavantagemobile.util.api.login.LogoutRepository
+import com.example.diavantagemobile.util.api.physicians.HttpPhysiciansRepository
+import com.example.diavantagemobile.util.api.physicians.PhysiciansRepository
 import com.example.diavantagemobile.util.data.interfaces.RemoteRepository
 import io.ktor.client.HttpClient
 
@@ -25,4 +27,5 @@ internal class RealRemoteRepository(
     override fun checkPatientRepository(): CheckPatientRepository = HttpCheckPatientRepository(client, apiStrings.checkPatient)
     override fun glucoseRepository(): GlucoseRepository = HttpGlucoseRepository(client, apiStrings)
     override fun bloodRepository(): BloodRepository = HttpBloodRepository(client, apiStrings)
+    override fun physiciansRepository(): PhysiciansRepository = HttpPhysiciansRepository(client, apiStrings)
 }
