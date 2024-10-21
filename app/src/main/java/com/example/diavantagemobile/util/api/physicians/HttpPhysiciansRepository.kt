@@ -11,7 +11,7 @@ class HttpPhysiciansRepository(
     val client: HttpClient,
     val apiStrings: ApiStrings = ApiStrings(),
 ) : PhysiciansRepository {
-    override suspend fun getPhysicians(): List<PhysicianResponse?>? {
+    override suspend fun getPhysicians(): List<PhysicianResponse> {
         Log.i("Get Physicians", "Starting physicians retrieve")
 
         val response = client.get(apiStrings.physicians)
@@ -19,6 +19,6 @@ class HttpPhysiciansRepository(
         Log.i("Get Physicians", response.body())
 
 
-        return response.body<List<PhysicianResponse?>?>()
+        return response.body<List<PhysicianResponse>>()
     }
 }

@@ -1,6 +1,10 @@
 package com.example.diavantagemobile.ui.physicians
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -11,13 +15,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,13 +34,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -55,9 +67,12 @@ fun PhysiciansScreen(
     returnToHome: () -> Unit
 ){
 
+    val physicians by physiciansViewModel.physicians.collectAsState()
+
     LaunchedEffect(true){
         physiciansViewModel.reloadPhysicians(physiciansRepository)
     }
+
 
     ScreenScaffoldTemplate(
         topBar = {
@@ -78,7 +93,13 @@ fun PhysiciansScreen(
         },
         content = {
             PhysiciansContentLayout(
-                physicians = physiciansViewModel.physicians,
+                physicians = physicians,
+                inputSort = physiciansViewModel.inputSorting,
+                sortingMap = physiciansViewModel.sortingMap,
+                onSortingChange = fun(sorting: Int){
+                    physiciansViewModel.updateSorting(sorting)
+                    physiciansViewModel.sortPhysicians()
+                },
                 modifier = modifier
             )
         }
@@ -87,26 +108,152 @@ fun PhysiciansScreen(
 
 @Composable
 fun PhysiciansContentLayout(
-    physicians: List<PhysicianResponse?>?,
+    physicians: List<PhysicianResponse>,
+    inputSort: Int,
+    sortingMap: Map<Int, String>,
+    onSortingChange: (Int) -> Unit,
     modifier: Modifier = Modifier
 ){
-    Column(
+    Column (
         verticalArrangement = Arrangement.Top,
         modifier = modifier
-            .fillMaxSize()
-            .padding(10.dp)
+            .padding(15.dp)
     ) {
-        physicians?.forEach() {
-            PhysicianCard(
-                physician = it!!,
-                modifier = modifier
-                    .padding(bottom = 10.dp)
-            )
+        FilteringBar(
+            inputSort = inputSort,
+            sortingMap = sortingMap,
+            onSortingChange = onSortingChange,
+            modifier = Modifier
+                .padding(bottom = 10.dp)
+                .fillMaxWidth()
+        )
+        Column(
+            verticalArrangement = Arrangement.Top,
+            modifier = modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+
+        ) {
+            physicians?.forEach() {
+                PhysicianCard(
+                    physician = it!!,
+                    modifier = modifier
+                        .padding(bottom = 10.dp)
+                )
+            }
         }
     }
 }
 
 
+@Composable
+private fun FilteringBar(
+    inputSort: Int,
+    sortingMap: Map<Int, String>,
+    onSortingChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .background(
+                color = Color.LightGray
+            )
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)
+
+    ) {
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = {},
+            ) {
+                Icon(
+                    Icons.Filled.FilterList,
+                    contentDescription = "Filter list",
+                    modifier = Modifier
+                        .size(50.dp)
+                )
+            }
+            Text(
+                text = "Filter",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+            )
+        }
+        SortingDropdown(
+            inputSort = inputSort,
+            sortingMap = sortingMap,
+            onSortingChange = onSortingChange,
+        )
+    }
+}
+
+
+@Composable
+private fun SortingDropdown(
+    inputSort: Int,
+    sortingMap: Map<Int, String>,
+    onSortingChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+){
+    val isDropdownExpanded = remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier
+            .width(150.dp)
+            .height(35.dp)
+            .border(
+                width = 2.dp,
+                shape = MaterialTheme.shapes.extraSmall,
+                color = MaterialTheme.colorScheme.outline
+            )
+    ){
+        Row (
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier
+                .clickable { isDropdownExpanded.value = true }
+                .padding(5.dp)
+        ) {
+            Text(
+                text = "Sorting: ",
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            sortingMap[inputSort]?.let {
+                Text(
+                    text = it,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Icon(
+                Icons.Filled.ExpandMore,
+                contentDescription = "Expand icon",
+                modifier = modifier
+            )
+        }
+        DropdownMenu(
+            expanded = isDropdownExpanded.value,
+            onDismissRequest = { isDropdownExpanded.value = false}
+        ) {
+            sortingMap.forEach {
+                DropdownMenuItem(
+                    text = {
+                        Text(text = it.value)
+                    },
+                    onClick = {
+                        isDropdownExpanded.value = false
+                        onSortingChange(it.key)
+                    }
+                )
+            }
+        }
+    }
+}
 
 
 @Composable
@@ -369,6 +516,20 @@ val physiciansList = listOf(
 )
 
 
+
+@Composable
+@Preview(showBackground = true)
+fun FilteringBarPreview(){
+    DiaVantageMobileTheme {
+        FilteringBar(
+            modifier = Modifier,
+            inputSort = 0,
+            onSortingChange = {},
+            sortingMap = PhysiciansViewModel().sortingMap
+        )
+    }
+}
+
 @Composable
 @Preview(showBackground = true)
 fun PhysicianCardPreview(){
@@ -426,6 +587,9 @@ fun PhysiciansLayoutPreview(){
             content = {
                 PhysiciansContentLayout(
                     physicians = physiciansList,
+                    inputSort = PhysiciansViewModel().inputSorting,
+                    sortingMap = PhysiciansViewModel().sortingMap,
+                    onSortingChange = {},
                     modifier = Modifier
                 )
             }
