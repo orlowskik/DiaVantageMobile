@@ -1,8 +1,5 @@
 package com.example.diavantagemobile.ui.physicians
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +20,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AssignmentInd
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,20 +36,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
-import com.example.diavantagemobile.util.api.ID
 import com.example.diavantagemobile.util.api.physicians.PhysiciansRepository
 import com.example.diavantagemobile.util.api.responses.AddressSerializer
 import com.example.diavantagemobile.util.api.responses.PhysicianResponse
 import com.example.diavantagemobile.util.api.responses.UserSerializer
+import com.example.diavantagemobile.util.composables.FilteringBar
+import com.example.diavantagemobile.util.composables.SearchBar
 import com.example.diavantagemobile.util.data.TopAppBarTypes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -68,20 +62,27 @@ fun PhysiciansScreen(
 ){
 
     val physicians by physiciansViewModel.physicians.collectAsState()
+    val isSearching by physiciansViewModel.isSearching.collectAsState()
+    val searchText by physiciansViewModel.searchText.collectAsState()
 
     LaunchedEffect(true){
         physiciansViewModel.reloadPhysicians(physiciansRepository)
     }
 
-
     ScreenScaffoldTemplate(
         topBar = {
             CreateTopAppBar(
                 title = "Physicians",
-                appBarType = TopAppBarTypes.CenterAlignedTopAppBar,
-                actions = {},
+                appBarType = TopAppBarTypes.SmallTopAppBar,
+                actions = {
+                    SearchBar(
+                        searchText = searchText,
+                        onSearchTextChange = physiciansViewModel::onSearchTextChange,
+                        modifier = modifier
+                    )
+                },
                 navigationIcon = {
-                    IconButton (onClick = { returnToHome() } ) {
+                    IconButton (onClick = { returnToHome()} ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -100,11 +101,14 @@ fun PhysiciansScreen(
                     physiciansViewModel.updateSorting(sorting)
                     physiciansViewModel.sortPhysicians()
                 },
+                isSearching = isSearching,
                 modifier = modifier
             )
         }
     )
 }
+
+
 
 @Composable
 fun PhysiciansContentLayout(
@@ -112,6 +116,7 @@ fun PhysiciansContentLayout(
     inputSort: Int,
     sortingMap: Map<Int, String>,
     onSortingChange: (Int) -> Unit,
+    isSearching: Boolean = false,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -125,7 +130,10 @@ fun PhysiciansContentLayout(
             onSortingChange = onSortingChange,
             modifier = Modifier
                 .padding(bottom = 10.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            isExpanded = false,
+            options = listOf(),
+            optionsStates = mapOf()
         )
         Column(
             verticalArrangement = Arrangement.Top,
@@ -134,127 +142,42 @@ fun PhysiciansContentLayout(
                 .verticalScroll(rememberScrollState())
 
         ) {
-            physicians?.forEach() {
-                PhysicianCard(
-                    physician = it!!,
-                    modifier = modifier
-                        .padding(bottom = 10.dp)
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun FilteringBar(
-    inputSort: Int,
-    sortingMap: Map<Int, String>,
-    onSortingChange: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-){
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .background(
-                color = Color.LightGray
-            )
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-
-    ) {
-        Row (
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(
-                onClick = {},
-            ) {
-                Icon(
-                    Icons.Filled.FilterList,
-                    contentDescription = "Filter list",
-                    modifier = Modifier
-                        .size(50.dp)
-                )
-            }
-            Text(
-                text = "Filter",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-            )
-        }
-        SortingDropdown(
-            inputSort = inputSort,
-            sortingMap = sortingMap,
-            onSortingChange = onSortingChange,
-        )
-    }
-}
-
-
-@Composable
-private fun SortingDropdown(
-    inputSort: Int,
-    sortingMap: Map<Int, String>,
-    onSortingChange: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-){
-    val isDropdownExpanded = remember { mutableStateOf(false) }
-
-    Box(
-        modifier = modifier
-            .width(150.dp)
-            .height(35.dp)
-            .border(
-                width = 2.dp,
-                shape = MaterialTheme.shapes.extraSmall,
-                color = MaterialTheme.colorScheme.outline
-            )
-    ){
-        Row (
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier
-                .clickable { isDropdownExpanded.value = true }
-                .padding(5.dp)
-        ) {
-            Text(
-                text = "Sorting: ",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            sortingMap[inputSort]?.let {
-                Text(
-                    text = it,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-
-            Icon(
-                Icons.Filled.ExpandMore,
-                contentDescription = "Expand icon",
-                modifier = modifier
-            )
-        }
-        DropdownMenu(
-            expanded = isDropdownExpanded.value,
-            onDismissRequest = { isDropdownExpanded.value = false}
-        ) {
-            sortingMap.forEach {
-                DropdownMenuItem(
-                    text = {
-                        Text(text = it.value)
-                    },
-                    onClick = {
-                        isDropdownExpanded.value = false
-                        onSortingChange(it.key)
+            if(isSearching){
+                Box(
+                    modifier = modifier.fillMaxSize()
+                ){
+                    CircularProgressIndicator(
+                        modifier = modifier
+                            .align(Alignment.Center)
+                    )
+                }
+            } else{
+                if(physicians.isEmpty()){
+                    Box(
+                        modifier = modifier
+                            .fillMaxSize()
+                            .padding(top = 25.dp)
+                    ) {
+                        Text(
+                            text = "No physicians found",
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = modifier
+                                .align(Alignment.Center)
+                        )
                     }
-                )
+                } else {
+                    physicians.forEach() {
+                        PhysicianCard(
+                            physician = it,
+                            modifier = modifier
+                                .padding(bottom = 10.dp)
+                        )
+                    }
+                }
             }
         }
     }
 }
-
 
 @Composable
 private fun PhysicianCard(
@@ -515,21 +438,6 @@ val physiciansList = listOf(
     )
 )
 
-
-
-@Composable
-@Preview(showBackground = true)
-fun FilteringBarPreview(){
-    DiaVantageMobileTheme {
-        FilteringBar(
-            modifier = Modifier,
-            inputSort = 0,
-            onSortingChange = {},
-            sortingMap = PhysiciansViewModel().sortingMap
-        )
-    }
-}
-
 @Composable
 @Preview(showBackground = true)
 fun PhysicianCardPreview(){
@@ -560,10 +468,10 @@ fun PhysicianCardFullPreview(){
 
 
 
+
 @Composable
 @Preview(showBackground = true)
 fun PhysiciansLayoutPreview(){
-
 
     DiaVantageMobileTheme {
 
@@ -571,8 +479,13 @@ fun PhysiciansLayoutPreview(){
             topBar = {
                 CreateTopAppBar(
                     title = "Physicians",
-                    appBarType = TopAppBarTypes.CenterAlignedTopAppBar,
-                    actions = {},
+                    appBarType = TopAppBarTypes.SmallTopAppBar,
+                    actions = {
+                        SearchBar(
+                            searchText = "Asd",
+                            onSearchTextChange = {}
+                        )
+                    },
                     navigationIcon = {
                         IconButton (onClick = { } ) {
                             Icon(
@@ -590,6 +503,7 @@ fun PhysiciansLayoutPreview(){
                     inputSort = PhysiciansViewModel().inputSorting,
                     sortingMap = PhysiciansViewModel().sortingMap,
                     onSortingChange = {},
+                    isSearching = false,
                     modifier = Modifier
                 )
             }

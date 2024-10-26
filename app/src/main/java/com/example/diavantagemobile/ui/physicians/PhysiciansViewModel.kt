@@ -8,12 +8,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.diavantagemobile.ui.interfaces.APIViewModel
 import com.example.diavantagemobile.util.api.physicians.PhysiciansRepository
 import com.example.diavantagemobile.util.api.responses.PhysicianResponse
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 
 class PhysiciansViewModel : APIViewModel() {
@@ -34,7 +39,10 @@ class PhysiciansViewModel : APIViewModel() {
     val originalPhysicians = _originalPhysicians.asStateFlow()
 
     private val _physicians = MutableStateFlow(listOf<PhysicianResponse>())
+    @OptIn(FlowPreview::class)
     var physicians = searchText
+        .debounce(1000L)
+        .onEach { _isSearching.update { true } }
         .combine(_physicians) { text, physicians ->
             if (text.isBlank()){
                 physicians
@@ -44,6 +52,7 @@ class PhysiciansViewModel : APIViewModel() {
                 }
             }
         }
+        .onEach { _isSearching.update { false } }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
