@@ -64,6 +64,8 @@ fun PhysiciansScreen(
     val physicians by physiciansViewModel.physicians.collectAsState()
     val isSearching by physiciansViewModel.isSearching.collectAsState()
     val searchText by physiciansViewModel.searchText.collectAsState()
+    val filteringMap by physiciansViewModel.filteringMap.collectAsState()
+    val filteringMapScheme by physiciansViewModel.filteringMapScheme.collectAsState()
 
     LaunchedEffect(true){
         physiciansViewModel.reloadPhysicians(physiciansRepository)
@@ -102,6 +104,10 @@ fun PhysiciansScreen(
                     physiciansViewModel.sortPhysicians()
                 },
                 isSearching = isSearching,
+                options = filteringMapScheme,
+                optionsStates = filteringMap,
+                onCheckBoxChange = physiciansViewModel::toggleMapIndex,
+                onApplyPressed = physiciansViewModel::applyFiltering,
                 modifier = modifier
             )
         }
@@ -117,6 +123,10 @@ fun PhysiciansContentLayout(
     sortingMap: Map<Int, String>,
     onSortingChange: (Int) -> Unit,
     isSearching: Boolean = false,
+    options: MutableMap<String, MutableMap<String, Boolean>> = mutableMapOf(),
+    optionsStates: MutableMap<String, MutableSet<String>> = mutableMapOf(),
+    onCheckBoxChange: (String, String) -> Unit = { _: String, _: String -> },
+    onApplyPressed: (MutableMap<String, MutableSet<String>>) -> Unit,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -132,8 +142,10 @@ fun PhysiciansContentLayout(
                 .padding(bottom = 10.dp)
                 .fillMaxWidth(),
             isExpanded = false,
-            options = listOf(),
-            optionsStates = mapOf()
+            options = options,
+            optionsStates = optionsStates,
+            onCheckBoxChange = onCheckBoxChange,
+            onApplyPressed = onApplyPressed
         )
         Column(
             verticalArrangement = Arrangement.Top,
@@ -504,7 +516,8 @@ fun PhysiciansLayoutPreview(){
                     sortingMap = PhysiciansViewModel().sortingMap,
                     onSortingChange = {},
                     isSearching = false,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onApplyPressed = {}
                 )
             }
         )
