@@ -132,6 +132,8 @@ fun PhysiciansContentLayout(
     onApplyPressed: () -> Unit,
     modifier: Modifier = Modifier
 ){
+    val isFilteringExpanded = remember { mutableStateOf(false) }
+
     Column (
         verticalArrangement = Arrangement.Top,
         modifier = modifier
@@ -144,13 +146,21 @@ fun PhysiciansContentLayout(
             modifier = Modifier
                 .padding(bottom = 10.dp)
                 .fillMaxWidth(),
-            isExpanded = false,
-            options = options,
-            optionsStates = optionsStates,
-            onCheckBoxChange = onCheckBoxChange,
-            countryCityMapping = countryCityMapping,
-            onApplyPressed = onApplyPressed
-        )
+            isExpanded = isFilteringExpanded.value,
+            changeExpanded = {isFilteringExpanded.value = !isFilteringExpanded.value }
+        ){
+            PhysiciansFilteringOptions(
+                options = options,
+                optionsStates = optionsStates,
+                countryCityMapping = countryCityMapping,
+                onCheckBoxChange = onCheckBoxChange,
+                onApplyPressed = onApplyPressed,
+                onExitPressed = {isFilteringExpanded.value = false },
+                modifier = Modifier
+                    .padding(horizontal = 10.dp, vertical = 10.dp)
+                    .fillMaxHeight(1f)
+            )
+        }
         Column(
             verticalArrangement = Arrangement.Top,
             modifier = modifier

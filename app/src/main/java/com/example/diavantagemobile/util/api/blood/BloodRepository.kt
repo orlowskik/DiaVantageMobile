@@ -1,5 +1,6 @@
 package com.example.diavantagemobile.util.api.blood
 
+import com.example.diavantagemobile.util.api.responses.BloodResponse
 import com.example.diavantagemobile.util.api.responses.FailedSendBloodResponse
 
 
@@ -11,4 +12,6 @@ interface BloodRepository {
         pulse: String,
         measurementDate: String,
     ) : FailedSendBloodResponse?
+
+    suspend fun getBloodMeasurements():List<BloodResponse>?
 }

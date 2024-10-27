@@ -7,20 +7,13 @@ import androidx.compose.runtime.setValue
 import com.example.diavantagemobile.ui.interfaces.MeasurementViewModel
 import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
 import com.example.diavantagemobile.util.api.responses.FailedSendGlucoseResponse
+import com.example.diavantagemobile.util.data.GlucoseTypes
 import kotlinx.coroutines.runBlocking
 
 
 class GlucoseViewModel : MeasurementViewModel() {
 
-    val typesMap = mapOf(
-        0 to "undefined",
-        1 to "Before Breakfast",
-        2 to "After Breakfast",
-        3 to "Before Lunch",
-        4 to "After Lunch",
-        5 to "Before Dinner",
-        6 to "After Dinner"
-    )
+    val typesMap = GlucoseTypes().map
 
     var glucoseResponse by mutableStateOf<FailedSendGlucoseResponse?>(null)
         private set

@@ -1,6 +1,7 @@
 package com.example.diavantagemobile.util.api.blood
 
 import android.util.Log
+import com.example.diavantagemobile.util.api.responses.BloodResponse
 import com.example.diavantagemobile.util.data.ApiStrings
 import com.example.diavantagemobile.util.api.responses.CsrfResponse
 import com.example.diavantagemobile.util.api.responses.FailedSendBloodResponse
@@ -8,6 +9,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.http.HttpStatusCode
@@ -50,5 +52,16 @@ class HttpBloodRepository(
         Log.i("Glucose Send", response.body())
 
         return response.body<FailedSendBloodResponse?>()
+    }
+
+    override suspend fun getBloodMeasurements(): List<BloodResponse>? {
+        Log.i("Blood retrieve", "Starting blood retrieve")
+
+        val response = client.get(apiStrings.blood)
+
+        return if(response.status == HttpStatusCode.OK)
+            response.body<List<BloodResponse>>()
+        else
+            null
     }
 }

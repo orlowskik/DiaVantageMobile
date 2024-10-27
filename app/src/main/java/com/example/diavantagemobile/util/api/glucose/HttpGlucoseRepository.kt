@@ -4,10 +4,12 @@ import android.util.Log
 import com.example.diavantagemobile.util.data.ApiStrings
 import com.example.diavantagemobile.util.api.responses.CsrfResponse
 import com.example.diavantagemobile.util.api.responses.FailedSendGlucoseResponse
+import com.example.diavantagemobile.util.api.responses.GlucoseResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.cookie
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.http.HttpStatusCode
@@ -47,5 +49,15 @@ class HttpGlucoseRepository(
 
         return response.body<FailedSendGlucoseResponse?>()
 
+    }
+
+    override suspend fun getGlucoseMeasurements(): List<GlucoseResponse>? {
+        Log.i("Glucose retrieve", "Starting glucose retrieve")
+        val response = client.get(apiStrings.glucose)
+
+        return if (response.status == HttpStatusCode.OK)
+            response.body<List<GlucoseResponse>>()
+        else
+            null
     }
 }
