@@ -1,5 +1,6 @@
 package com.example.diavantagemobile.ui.measurements
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
@@ -31,6 +32,18 @@ class MeasurementsViewModel: APIViewModel() {
     private val _bloodMeasurements = MutableStateFlow(listOf<BloodResponse>())
     val bloodMeasurements = _bloodMeasurements.asStateFlow()
 
+    private val _filteringMapScheme = MutableStateFlow(createBooleanFilteringMap())
+    val filteringMapScheme = _filteringMapScheme.asStateFlow()
+
+    private val _filteringMap = MutableStateFlow(createFilteringMap())
+    val filteringMap = _filteringMap.asStateFlow()
+
+    private val _measurementsShowMap = MutableStateFlow(mutableMapOf(
+        "Glucose" to true,
+        "Blood" to true
+    ))
+    val measurementsShowMap = _measurementsShowMap.asStateFlow()
+
     var inputSorting by mutableIntStateOf(0)
         private set
 
@@ -52,11 +65,53 @@ class MeasurementsViewModel: APIViewModel() {
         }
     }
 
+    fun toggleMapIndex(category: String, option: String){
+        _filteringMapScheme.value[category]?.set(option,
+            !_filteringMapScheme.value[category]?.get(option)!!
+        )
+        Log.i("Toggle", _filteringMapScheme.value[category].toString())
+    }
 
     fun reloadMeasurements(glucoseRepository: GlucoseRepository, bloodRepository: BloodRepository)
     = runBlocking {
         reloadGlucoseMeasurement(glucoseRepository)
         reloadBloodMeasurement(bloodRepository)
+        sortMeasurements()
+    }
+
+    private fun createFilteringMap(): MutableMap<String, MutableSet<String>>{
+        val measurementKinds = mutableSetOf("Glucose", "Blood")
+
+        return mutableMapOf(
+            "Kind" to measurementKinds,
+        )
+    }
+
+    private fun createBooleanFilteringMap(): MutableMap<String, MutableMap<String, Boolean>>{
+        val measurementKinds = mutableSetOf("Glucose", "Blood")
+
+        return mutableMapOf(
+            "Kind" to measurementKinds.associateWith { false }.toMutableMap(),
+        )
+    }
+
+
+
+    fun applyFiltering(){
+        if (_filteringMap.value["Kind"] != null){
+            _measurementsShowMap.value = mutableMapOf(
+                "Glucose" to false,
+                "Blood" to false
+            )
+            _filteringMap.value["Kind"]?.forEach {
+                _measurementsShowMap.value[it] = true
+            }
+        } else {
+            _measurementsShowMap.value = mutableMapOf(
+                "Glucose" to true,
+                "Blood" to true
+            )
+        }
     }
 
 

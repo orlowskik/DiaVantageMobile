@@ -32,6 +32,7 @@ import java.util.Calendar
 fun DatePickerFieldToModal(
     inputDate: String,
     onDateChange: (millis: Long?) -> Unit,
+    label: String,
     modifier: Modifier = Modifier,
     currentTime: Calendar = Calendar.getInstance(),
     debugPicker: Boolean = false
@@ -44,7 +45,7 @@ fun DatePickerFieldToModal(
     OutlinedTextField(
         value = inputDate,
         onValueChange = { onDateChange(datePickerState.selectedDateMillis) },
-        label = { Text("Measurement Date") },
+        label = { Text(label) },
         placeholder = { Text("DD-MM-YYYY") },
         trailingIcon = {
             Icon(

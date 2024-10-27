@@ -161,6 +161,7 @@ fun GlucoseContentLayout(
         DatePickerFieldToModal(
             inputDate = inputDate,
             onDateChange = onDateChange,
+            label = "Measurement Date",
             modifier = modifier,
         )
 

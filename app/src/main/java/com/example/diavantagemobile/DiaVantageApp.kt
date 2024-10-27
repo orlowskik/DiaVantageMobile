@@ -13,6 +13,7 @@ import com.example.diavantagemobile.ui.glucose.GlucoseScreen
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.home.PhysicianHomeScreen
 import com.example.diavantagemobile.ui.login.LoginScreen
+import com.example.diavantagemobile.ui.measurements.MeasurementsScreen
 import com.example.diavantagemobile.ui.physicians.PhysiciansScreen
 import com.example.diavantagemobile.ui.registration.RegistrationScreen
 import com.example.diavantagemobile.util.LoginUserInfo
@@ -92,7 +93,7 @@ fun DiaVantageApp(
                 onGlucosePress = { navActions.navigateToGlucose() },
                 onBloodPress = { navActions.navigateToBlood() },
                 onPhysiciansPress = { navActions.navigateToPhysicians() },
-                onHistoryPress = {},
+                onHistoryPress = { navActions.navigateToMeasurements() },
             )
         }
         composable(DiaVantageDestinations.GLUCOSE_ROUTE) {
@@ -119,6 +120,14 @@ fun DiaVantageApp(
                 modifier = modifier,
                 physiciansRepository = ID.remoteRepository.physiciansRepository(),
                 returnToHome = {navActions.navigateToHome()}
+            )
+        }
+
+        composable(DiaVantageDestinations.MEASUREMENTS_ROUTE) {
+            MeasurementsScreen(
+                glucoseRepository = ID.remoteRepository.glucoseRepository(),
+                bloodRepository = ID.remoteRepository.bloodRepository(),
+                returnHome = {navActions.navigateToHome()}
             )
         }
 

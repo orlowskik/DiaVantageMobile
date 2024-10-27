@@ -1,6 +1,5 @@
-package com.example.diavantagemobile.ui.physicians
+package com.example.diavantagemobile.ui.measurements
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +17,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -32,22 +33,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.diavantagemobile.ui.physicians.PhysiciansViewModel
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.composables.FilteringBar
 
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PhysiciansFilteringOptions(
+fun MeasurementFilteringOptions(
     options: MutableMap<String, MutableMap<String, Boolean>>,
     optionsStates: MutableMap<String, MutableSet<String>>,
-    countryCityMapping: Map<String, String>? = null,
     onCheckBoxChange: (String, String) -> Unit,
     onExitPressed: () -> Unit = {},
     onApplyPressed: () -> Unit = {},
     modifier: Modifier = Modifier
 ){
     var recompositionDummy by remember { mutableStateOf(true) }
+
     Column (
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -68,10 +70,7 @@ fun PhysiciansFilteringOptions(
                 FlowRow (
                     modifier = Modifier
                 ) {
-                    entry.value.forEach inner@{ subEntry ->
-                        if (entry.key == "City" && optionsStates["Country"]?.contains(
-                                countryCityMapping?.get(subEntry.key)
-                            ) != true) return@inner
+                    entry.value.forEach { subEntry ->
                         Row (
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -136,34 +135,35 @@ fun PhysiciansFilteringOptions(
     LaunchedEffect(recompositionDummy) { }
 }
 
+@Composable
+fun YearsDropdownMenu(
+    onDateSelected: (String) -> Unit = {},
+){
+    val isDropdownExpanded = remember { mutableStateOf(false) }
+
+    DropdownMenu(
+        expanded = isDropdownExpanded.value,
+        onDismissRequest = { isDropdownExpanded.value = false }
+    ) {
+        for (i in 2000..2030){
+            DropdownMenuItem(
+                text = { Text(text = i.toString()) },
+                onClick = {
+                    isDropdownExpanded.value = false
+                    onDateSelected(i.toString())
+                }
+            )
+        }
+    }
+}
+
 
 val options = mutableMapOf(
-    "Specialty" to mutableMapOf(
-        "Cardiology" to true,
-        "Neurology" to false,
-        "Pediatrics" to true,
-        "Orthopedics" to false,
-        "Dermatology" to true,
-        "Oncology" to false,
-        "Psychiatry" to true,
-        "Endocrinology" to false,
-        "Gastroenterology" to true,
-        "Ophthalmology" to false
+    "Kind" to mutableMapOf(
+        "Glucose" to false,
+        "Blood" to false,
     ),
-    "Country" to mutableMapOf(
-        "United States" to true,
-        "Canada" to false,
-        "United Kingdom" to true,
-        "Germany" to false,
-        "France" to true,
-        "Australia" to false,
-        "Japan" to true,
-        "India" to false,
-        "Brazil" to true,
-        "South Africa" to false
-    )
 )
-
 
 
 @Composable
@@ -185,10 +185,9 @@ fun PhysiciansFilteringBarPreview(){
                 isExpanded = true,
                 changeExpanded = { }
             ){
-                PhysiciansFilteringOptions(
+                MeasurementFilteringOptions(
                     options = options,
                     optionsStates = mutableMapOf(),
-                    countryCityMapping = mapOf(),
                     onCheckBoxChange = {_: String, _: String -> },
                     onApplyPressed = {},
                     onExitPressed = {},

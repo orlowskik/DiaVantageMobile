@@ -1,5 +1,6 @@
 package com.example.diavantagemobile.ui.measurements
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,15 +28,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.diavantagemobile.ui.physicians.PhysiciansContentLayout
-import com.example.diavantagemobile.ui.physicians.PhysiciansViewModel
-import com.example.diavantagemobile.ui.physicians.physiciansList
 import com.example.diavantagemobile.ui.theme.DiaVantageMobileTheme
 import com.example.diavantagemobile.util.CreateTopAppBar
 import com.example.diavantagemobile.util.ScreenScaffoldTemplate
@@ -44,7 +43,6 @@ import com.example.diavantagemobile.util.api.glucose.GlucoseRepository
 import com.example.diavantagemobile.util.api.responses.BloodResponse
 import com.example.diavantagemobile.util.api.responses.GlucoseResponse
 import com.example.diavantagemobile.util.composables.FilteringBar
-import com.example.diavantagemobile.util.composables.SearchBar
 import com.example.diavantagemobile.util.data.TopAppBarTypes
 
 @Composable
@@ -57,14 +55,19 @@ fun MeasurementsScreen(
 ){
     val glucoseMeasurements by measurementsViewModel.glucoseMeasurements.collectAsState()
     val bloodMeasurements by measurementsViewModel.bloodMeasurements.collectAsState()
+    val filteringMap by measurementsViewModel.filteringMap.collectAsState()
+    val filteringMapScheme by measurementsViewModel.filteringMapScheme.collectAsState()
+    val measurementShowMap by measurementsViewModel.measurementsShowMap.collectAsState()
 
     LaunchedEffect(true) {
         measurementsViewModel.reloadMeasurements(
             glucoseRepository = glucoseRepository,
             bloodRepository = bloodRepository
         )
+        measurementsViewModel.sortMeasurements()
     }
 
+    Log.i("measurements", measurementShowMap.toString())
 
     ScreenScaffoldTemplate(
         topBar = {
@@ -87,12 +90,18 @@ fun MeasurementsScreen(
             MeasurementsContentLayout(
                 glucoseList = glucoseMeasurements,
                 bloodList = bloodMeasurements,
+                measurementShowMap = measurementShowMap,
                 modifier = modifier,
-                inputSort = TODO(),
-                sortingMap = TODO(),
-                onSortingChange = TODO(),
-                onApplyPressed = TODO(),
-                isSearching = TODO()
+                inputSort = measurementsViewModel.inputSorting,
+                sortingMap = measurementsViewModel.sortingMap,
+                options = filteringMapScheme,
+                optionsStates = filteringMap,
+                onSortingChange = fun(sorting: Int){
+                    measurementsViewModel.updateSorting(sorting)
+                    measurementsViewModel.sortMeasurements()
+                },
+                onCheckBoxChange = measurementsViewModel::toggleMapIndex,
+                onApplyPressed = measurementsViewModel::applyFiltering,
             )
         }
     )
@@ -104,13 +113,19 @@ fun MeasurementsScreen(
 fun MeasurementsContentLayout(
     glucoseList: List<GlucoseResponse>,
     bloodList: List<BloodResponse>,
+    measurementShowMap: Map<String, Boolean>,
     inputSort: Int,
+    isSearching: Boolean = false,
     sortingMap: Map<Int, String>,
+    options: MutableMap<String, MutableMap<String, Boolean>> = mutableMapOf(),
+    optionsStates: MutableMap<String, MutableSet<String>> = mutableMapOf(),
     onSortingChange: (Int) -> Unit,
     onApplyPressed: () -> Unit,
-    isSearching: Boolean = false,
+    onCheckBoxChange: (String, String) -> Unit = { _: String, _: String -> },
     modifier: Modifier = Modifier
 ){
+    val isFilteringExpanded = remember { mutableStateOf(false) }
+
     Column (
         verticalArrangement = Arrangement.Top,
         modifier = modifier
@@ -123,10 +138,17 @@ fun MeasurementsContentLayout(
             modifier = Modifier
                 .padding(bottom = 10.dp)
                 .fillMaxWidth(),
-            isExpanded = false,
-            changeExpanded = {},
+            isExpanded = isFilteringExpanded.value,
+            changeExpanded = {isFilteringExpanded.value = !isFilteringExpanded.value},
         ){
-
+            MeasurementFilteringOptions(
+                modifier = modifier,
+                options = options ,
+                optionsStates = optionsStates,
+                onCheckBoxChange = onCheckBoxChange,
+                onExitPressed = { isFilteringExpanded.value = false },
+                onApplyPressed = onApplyPressed
+            )
         }
         Column(
             verticalArrangement = Arrangement.Top,
@@ -145,91 +167,96 @@ fun MeasurementsContentLayout(
                     )
                 }
             } else{
-                Card(
-                    modifier = modifier
-                        .padding(vertical = 10.dp),
-                    colors = CardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                        disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                        disabledContentColor = MaterialTheme.colorScheme.onSecondary
-                    )
-                ) {
-                    Row (
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Glucose Measurements"
-                        )
-                    }
-                }
-                if(glucoseList.isEmpty()){
-                    Box(
+                if (measurementShowMap["Glucose"] == true) {
+                    Card(
                         modifier = modifier
-                            .fillMaxSize()
-                            .padding(top = 25.dp)
+                            .padding(vertical = 10.dp),
+                        colors = CardColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                            disabledContentColor = MaterialTheme.colorScheme.onSecondary
+                        )
                     ) {
-                        Text(
-                            text = "No glucose measurements found",
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = modifier
-                                .align(Alignment.Center)
-                        )
+                        Row (
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Glucose Measurements"
+                            )
+                        }
                     }
-                } else {
-                    glucoseList.forEach {
-                        MeasurementCard(
-                            glucose = it,
+                    if(glucoseList.isEmpty()){
+                        Box(
                             modifier = modifier
-                                .padding(bottom = 10.dp)
-                        )
+                                .fillMaxSize()
+                                .padding(top = 25.dp)
+                        ) {
+                            Text(
+                                text = "No glucose measurements found",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = modifier
+                                    .align(Alignment.Center)
+                            )
+                        }
+                    } else {
+                        glucoseList.forEach {
+                            MeasurementCard(
+                                glucose = it,
+                                modifier = modifier
+                                    .padding(bottom = 10.dp)
+                            )
+                        }
                     }
                 }
-                Card(
-                    modifier = modifier
-                        .padding(vertical = 10.dp),
-                    colors = CardColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary,
-                        disabledContainerColor = MaterialTheme.colorScheme.secondary,
-                        disabledContentColor = MaterialTheme.colorScheme.onSecondary
-                    )
 
-                ) {
-                    Row (
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Blood Pressure Measurements"
-                        )
-                    }
-                }
-                if (bloodList.isEmpty()){
-                    Box(
+                if (measurementShowMap["Blood"] == true) {
+                    Card(
                         modifier = modifier
-                            .fillMaxSize()
-                            .padding(top = 25.dp)
+                            .padding(vertical = 10.dp),
+                        colors = CardColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary,
+                            disabledContainerColor = MaterialTheme.colorScheme.secondary,
+                            disabledContentColor = MaterialTheme.colorScheme.onSecondary
+                        )
+
                     ) {
-                        Text(
-                            text = "No blood pressure measurements found",
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = modifier
-                                .align(Alignment.Center)
-                        )
+                        Row (
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "Blood Pressure Measurements"
+                            )
+                        }
                     }
-                } else {
-                    bloodList.forEach() {
-                        MeasurementCard(
-                            blood = it,
+                    if (bloodList.isEmpty()){
+                        Box(
                             modifier = modifier
-                                .padding(bottom = 10.dp)
-                        )
+                                .fillMaxSize()
+                                .padding(top = 25.dp)
+                        ) {
+                            Text(
+                                text = "No blood pressure measurements found",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = modifier
+                                    .align(Alignment.Center)
+                            )
+                        }
+                    } else {
+                        bloodList.forEach() {
+                            MeasurementCard(
+                                blood = it,
+                                modifier = modifier
+                                    .padding(bottom = 10.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -466,7 +493,11 @@ fun MeasurementScreenPreview(){
                     inputSort = TODO(),
                     sortingMap = TODO(),
                     onSortingChange = TODO(),
-                    onApplyPressed = TODO()
+                    onApplyPressed = TODO(),
+                    measurementShowMap = TODO(),
+                    options = TODO(),
+                    optionsStates = TODO(),
+                    onCheckBoxChange = TODO()
                 )
             }
         )

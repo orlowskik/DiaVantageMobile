@@ -171,6 +171,7 @@ fun BloodContentLayout(
         DatePickerFieldToModal(
             inputDate = inputDate,
             onDateChange = onDateChange,
+            label = "Measurement Date",
             modifier = modifier,
         )
 
