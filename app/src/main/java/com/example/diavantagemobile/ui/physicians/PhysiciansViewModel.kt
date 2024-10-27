@@ -139,19 +139,36 @@ class PhysiciansViewModel : APIViewModel() {
 
 
     fun applyFiltering(){
+        if (_filteringMap.value["Specialty"]?.isNotEmpty() == true &&
+            _filteringMap.value["Country"]?.isNotEmpty() == true &&
+            _filteringMap.value["City"]?.isNotEmpty() == true){
 
-        if (_filteringMap.value["Specialty"]?.isNotEmpty() == true && _filteringMap.value["Country"]?.isNotEmpty() == true){
-            _physicians.value = _originalPhysicians.value.filter {
-                _filteringMap.value["Specialty"]?.contains(it.specialty)!! && _filteringMap.value["Country"]?.contains(it.address.country)!!
-            }
-        } else if (_filteringMap.value["Specialty"]?.isNotEmpty() == true) {
-            _physicians.value = _originalPhysicians.value.filter {
-                _filteringMap.value["Specialty"]?.contains(it.specialty)!!
-            }
-        } else if (_filteringMap.value["Country"]?.isNotEmpty() == true) {
-            _physicians.value = _originalPhysicians.value.filter {
-                _filteringMap.value["Country"]?.contains(it.address.country)!!
-            }
+                _physicians.value = _originalPhysicians.value.filter {
+                            _filteringMap.value["Specialty"]?.contains(it.specialty)!! &&
+                            _filteringMap.value["Country"]?.contains(it.address.country)!! &&
+                            _filteringMap.value["City"]?.contains(it.address.city)!!
+                }
+        } else if (
+            _filteringMap.value["Specialty"]?.isNotEmpty() == true) {
+
+                _physicians.value = _originalPhysicians.value.filter {
+                    _filteringMap.value["Specialty"]?.contains(it.specialty)!!
+                }
+        } else if (
+            _filteringMap.value["Country"]?.isNotEmpty() == true &&
+            _filteringMap.value["City"]?.isNotEmpty() == true) {
+
+                _physicians.value = _originalPhysicians.value.filter {
+                            _filteringMap.value["Country"]?.contains(it.address.country)!! &&
+                            _filteringMap.value["City"]?.contains(it.address.city)!!
+                }
+        } else if (
+            _filteringMap.value["Country"]?.isNotEmpty() == true
+        ){
+                _physicians.value = _originalPhysicians.value.filter {
+                    _filteringMap.value["Country"]?.contains(it.address.country)!!
+                }
+
         } else {
             _physicians.value = _originalPhysicians.value.toList()
         }
