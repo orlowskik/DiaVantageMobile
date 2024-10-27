@@ -55,8 +55,9 @@ fun FilteringBar(
     isExpanded: Boolean = false,
     options: MutableMap<String, MutableMap<String, Boolean>>,
     optionsStates: MutableMap<String, MutableSet<String>>,
+    countryCityMapping: Map<String, String>,
     onCheckBoxChange: (String, String) -> Unit,
-    onApplyPressed: (MutableMap<String, MutableSet<String>>) -> Unit = {},
+    onApplyPressed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ){
     val isFilteringExpanded = remember { mutableStateOf(isExpanded) }
@@ -106,6 +107,7 @@ fun FilteringBar(
                 FilteringOptions(
                     options = options,
                     optionsStates = optionsStates,
+                    countryCityMapping = countryCityMapping,
                     onCheckBoxChange = onCheckBoxChange,
                     onExitPressed = { isFilteringExpanded.value = !isFilteringExpanded.value},
                     onApplyPressed = onApplyPressed,
@@ -125,9 +127,10 @@ fun FilteringBar(
 private fun FilteringOptions(
     options: MutableMap<String, MutableMap<String, Boolean>>,
     optionsStates: MutableMap<String, MutableSet<String>>,
+    countryCityMapping: Map<String, String>,
     onCheckBoxChange: (String, String) -> Unit,
     onExitPressed: () -> Unit = {},
-    onApplyPressed: (MutableMap<String, MutableSet<String>>) -> Unit = {},
+    onApplyPressed: () -> Unit = {},
     modifier: Modifier = Modifier
 ){
     var recompositionDummy by remember { mutableStateOf(true) }
@@ -140,6 +143,7 @@ private fun FilteringOptions(
             .fillMaxWidth()
     ) {
         options.forEach{ entry->
+            if (entry.key == "City" && optionsStates["Country"]?.isEmpty() == true) return@forEach
             Row (
                 modifier = Modifier
             ) {
@@ -153,7 +157,8 @@ private fun FilteringOptions(
                 FlowRow (
                     modifier = Modifier
                 ) {
-                    entry.value.forEach{ subEntry ->
+                    entry.value.forEach inner@{ subEntry ->
+                        if (entry.key == "City" && optionsStates["Country"]?.contains(countryCityMapping[subEntry.key]) != true) return@inner
                         Row (
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -203,7 +208,8 @@ private fun FilteringOptions(
             }
             Button(
                 onClick = {
-                    onApplyPressed(optionsStates)
+                    onApplyPressed()
+                    onExitPressed()
                     },
                 modifier = modifier
             ) {
@@ -328,6 +334,7 @@ fun FilteringBarPreview(){
                 options = options,
                 optionsStates = mutableMapOf(),
                 onCheckBoxChange = {_:String, _:String ->},
+                countryCityMapping = mapOf(),
                 isExpanded = true,
             )
         }

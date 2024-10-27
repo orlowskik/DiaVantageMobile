@@ -66,6 +66,7 @@ fun PhysiciansScreen(
     val searchText by physiciansViewModel.searchText.collectAsState()
     val filteringMap by physiciansViewModel.filteringMap.collectAsState()
     val filteringMapScheme by physiciansViewModel.filteringMapScheme.collectAsState()
+    val countryCityMapping by physiciansViewModel.countryCityMapping.collectAsState()
 
     LaunchedEffect(true){
         physiciansViewModel.reloadPhysicians(physiciansRepository)
@@ -106,6 +107,7 @@ fun PhysiciansScreen(
                 isSearching = isSearching,
                 options = filteringMapScheme,
                 optionsStates = filteringMap,
+                countryCityMapping = countryCityMapping,
                 onCheckBoxChange = physiciansViewModel::toggleMapIndex,
                 onApplyPressed = physiciansViewModel::applyFiltering,
                 modifier = modifier
@@ -125,8 +127,9 @@ fun PhysiciansContentLayout(
     isSearching: Boolean = false,
     options: MutableMap<String, MutableMap<String, Boolean>> = mutableMapOf(),
     optionsStates: MutableMap<String, MutableSet<String>> = mutableMapOf(),
+    countryCityMapping: Map<String, String>,
     onCheckBoxChange: (String, String) -> Unit = { _: String, _: String -> },
-    onApplyPressed: (MutableMap<String, MutableSet<String>>) -> Unit,
+    onApplyPressed: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -145,6 +148,7 @@ fun PhysiciansContentLayout(
             options = options,
             optionsStates = optionsStates,
             onCheckBoxChange = onCheckBoxChange,
+            countryCityMapping = countryCityMapping,
             onApplyPressed = onApplyPressed
         )
         Column(
@@ -517,6 +521,7 @@ fun PhysiciansLayoutPreview(){
                     onSortingChange = {},
                     isSearching = false,
                     modifier = Modifier,
+                    countryCityMapping = mapOf(),
                     onApplyPressed = {}
                 )
             }

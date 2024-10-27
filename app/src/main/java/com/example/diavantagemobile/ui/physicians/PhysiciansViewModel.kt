@@ -27,6 +27,9 @@ class PhysiciansViewModel : APIViewModel() {
         2 to "Name descending",
     )
 
+    private val _countryCityMapping = MutableStateFlow(mapOf<String, String>())
+    val countryCityMapping = _countryCityMapping.asStateFlow()
+
     private val _filteringMapScheme = MutableStateFlow(createBooleanFilteringMap())
     val filteringMapScheme = _filteringMapScheme.asStateFlow()
 
@@ -41,6 +44,8 @@ class PhysiciansViewModel : APIViewModel() {
 
     private val _filteringMap = MutableStateFlow(createFilteringMap())
     val filteringMap = _filteringMap.asStateFlow()
+
+
 
     private val _physicians = MutableStateFlow(listOf<PhysicianResponse>())
     @OptIn(FlowPreview::class)
@@ -109,30 +114,48 @@ class PhysiciansViewModel : APIViewModel() {
         val countries = mutableSetOf<String>()
         val cities = mutableSetOf<String>()
 
+        val countryCityMapping = mutableMapOf<String, String>()
+
         if(_originalPhysicians != null){
             _originalPhysicians.value.forEach{ physician ->
                 specialties.add(physician.specialty)
                 countries.add(physician.address.country)
                 cities.add(physician.address.city)
+
+                countryCityMapping[physician.address.city] = physician.address.country
             }
         }
+
+        _countryCityMapping.value = countryCityMapping
 
         return mutableMapOf(
             "Specialty" to specialties.associateWith { false }.toMutableMap(),
             "Country" to countries.associateWith { false }.toMutableMap(),
             "City" to cities.associateWith { false }.toMutableMap()
         )
+
+
     }
 
 
-    fun applyFiltering(updatedMap: MutableMap<String,MutableSet<String>>){
-        updateFilteringMap(updatedMap)
+    fun applyFiltering(){
+
+        if (_filteringMap.value["Specialty"]?.isNotEmpty() == true && _filteringMap.value["Country"]?.isNotEmpty() == true){
+            _physicians.value = _originalPhysicians.value.filter {
+                _filteringMap.value["Specialty"]?.contains(it.specialty)!! && _filteringMap.value["Country"]?.contains(it.address.country)!!
+            }
+        } else if (_filteringMap.value["Specialty"]?.isNotEmpty() == true) {
+            _physicians.value = _originalPhysicians.value.filter {
+                _filteringMap.value["Specialty"]?.contains(it.specialty)!!
+            }
+        } else if (_filteringMap.value["Country"]?.isNotEmpty() == true) {
+            _physicians.value = _originalPhysicians.value.filter {
+                _filteringMap.value["Country"]?.contains(it.address.country)!!
+            }
+        } else {
+            _physicians.value = _originalPhysicians.value.toList()
+        }
         Log.i("Filtering", _filteringMap.value.toString())
-    }
-
-
-    private fun updateFilteringMap(updatedMap: MutableMap<String,MutableSet<String>>){
-        _filteringMap.value = updatedMap
     }
 
     fun toggleMapIndex(category: String, option: String){
