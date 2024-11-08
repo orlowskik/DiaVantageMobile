@@ -80,7 +80,7 @@ class MeasurementsViewModel: APIViewModel() {
     }
 
     private fun createFilteringMap(): MutableMap<String, MutableSet<String>>{
-        val measurementKinds = mutableSetOf("Glucose", "Blood")
+        val measurementKinds = mutableSetOf<String>()
 
         return mutableMapOf(
             "Kind" to measurementKinds,
@@ -95,16 +95,22 @@ class MeasurementsViewModel: APIViewModel() {
         )
     }
 
-
-
     fun applyFiltering(){
+        Log.i("Kind", _filteringMap.value["Kind"].toString())
         if (_filteringMap.value["Kind"] != null){
-            _measurementsShowMap.value = mutableMapOf(
-                "Glucose" to false,
-                "Blood" to false
-            )
-            _filteringMap.value["Kind"]?.forEach {
-                _measurementsShowMap.value[it] = true
+            if (_filteringMap.value["Kind"]?.isEmpty() == true) {
+                _measurementsShowMap.value = mutableMapOf(
+                    "Glucose" to true,
+                    "Blood" to true
+                )
+            } else {
+                _measurementsShowMap.value = mutableMapOf(
+                    "Glucose" to false,
+                    "Blood" to false
+                )
+                _filteringMap.value["Kind"]?.forEach {
+                    _measurementsShowMap.value[it] = true
+                }
             }
         } else {
             _measurementsShowMap.value = mutableMapOf(
