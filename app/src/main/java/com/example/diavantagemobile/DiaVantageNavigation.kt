@@ -2,8 +2,10 @@ package com.example.diavantagemobile
 
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.example.diavantagemobile.DiaVantageDestinationsArgs.CLASSIFICATION_QUESTION_ID
 import com.example.diavantagemobile.DiaVantageDestinationsArgs.USER_MESSAGE_ARG
 import com.example.diavantagemobile.DiaVantageScreens.BLOOD_SCREEN
+import com.example.diavantagemobile.DiaVantageScreens.DIABETES_CLASSIFICATION_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.GLUCOSE_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.HOME_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.LOGIN_SCREEN
@@ -11,7 +13,6 @@ import com.example.diavantagemobile.DiaVantageScreens.MEASUREMENTS_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.PHYSICIANS_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.PHYSICIAN_HOME_SCREEN
 import com.example.diavantagemobile.DiaVantageScreens.REGISTRATION_SCREEN
-import com.example.diavantagemobile.ui.blood.BloodScreen
 
 
 private object DiaVantageScreens {
@@ -23,10 +24,12 @@ private object DiaVantageScreens {
     const val BLOOD_SCREEN = "blood"
     const val PHYSICIANS_SCREEN = "physicians"
     const val MEASUREMENTS_SCREEN = "measurements"
+    const val DIABETES_CLASSIFICATION_SCREEN = "diabetes_classification"
 }
 
 object DiaVantageDestinationsArgs {
     const val USER_MESSAGE_ARG = "userMessage"
+    const val CLASSIFICATION_QUESTION_ID = "questionID"
 }
 
 object DiaVantageDestinations {
@@ -38,6 +41,7 @@ object DiaVantageDestinations {
     const val PHYSICIANS_ROUTE = "$PHYSICIANS_SCREEN?"
     const val MEASUREMENTS_ROUTE = "$MEASUREMENTS_SCREEN?"
     const val PHYSICIAN_HOME_ROUTE = "$PHYSICIAN_HOME_SCREEN?"
+    const val DIABETES_CLASSIFICATION_ROUTE ="$DIABETES_CLASSIFICATION_SCREEN/{$CLASSIFICATION_QUESTION_ID}"
 }
 
 class DiaVantageNavigationActions(private val navController: NavHostController) {
@@ -119,5 +123,9 @@ class DiaVantageNavigationActions(private val navController: NavHostController) 
             }
             launchSingleTop = true
         }
+    }
+
+    fun navigateToClassification(questionID: Int = 0){
+        navController.navigate("$DIABETES_CLASSIFICATION_SCREEN/$questionID")
     }
 }

@@ -47,6 +47,7 @@ fun HomeScreen(
     onGlucosePress: () -> Unit,
     onPhysiciansPress: () -> Unit,
     onHistoryPress: () -> Unit,
+    onClassificationPress: () -> Unit,
 
     logoutRepository: LogoutRepository,
 ){
@@ -70,6 +71,7 @@ fun HomeScreen(
             onBloodPress = onBloodPress,
             onPhysiciansPress = onPhysiciansPress,
             onHistoryPress = onHistoryPress,
+            onClassificationPress = onClassificationPress
         )}
 
     )
@@ -82,7 +84,8 @@ fun HomeContent(
     onGlucosePress: () -> Unit = {},
     onBloodPress: () -> Unit = {},
     onPhysiciansPress: () -> Unit = {},
-    onHistoryPress: () -> Unit = {}
+    onHistoryPress: () -> Unit = {},
+    onClassificationPress: () -> Unit,
 ){
 
     val options = mapOf(
@@ -90,6 +93,7 @@ fun HomeContent(
         "Insert blood pressure" to onBloodPress,
         "Show measurement history" to onHistoryPress,
         "Show physicians" to onPhysiciansPress,
+        "Classify" to onClassificationPress
         )
 
     Column(
@@ -222,7 +226,9 @@ fun HomeScreenPreview(){
             onBloodPress = {},
             onGlucosePress = {},
             onHistoryPress = {},
-            logoutRepository = ID.remoteRepository.logoutRepository()
+            onClassificationPress = {},
+            logoutRepository = ID.remoteRepository.logoutRepository(),
+
         )
     }
 }

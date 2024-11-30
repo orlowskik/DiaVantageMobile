@@ -5,10 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.diavantagemobile.DiaVantageDestinationsArgs.CLASSIFICATION_QUESTION_ID
 import com.example.diavantagemobile.ui.blood.BloodScreen
+import com.example.diavantagemobile.ui.classification.ClassificationScreen
+import com.example.diavantagemobile.ui.classification.questionaire.Questionnaire
 import com.example.diavantagemobile.ui.glucose.GlucoseScreen
 import com.example.diavantagemobile.ui.home.HomeScreen
 import com.example.diavantagemobile.ui.home.PhysicianHomeScreen
@@ -32,7 +37,7 @@ fun DiaVantageApp(
     },
 ) {
 
-
+    Questionnaire.initQuestions()
 
     NavHost(
         navController = navController,
@@ -94,6 +99,7 @@ fun DiaVantageApp(
                 onBloodPress = { navActions.navigateToBlood() },
                 onPhysiciansPress = { navActions.navigateToPhysicians() },
                 onHistoryPress = { navActions.navigateToMeasurements() },
+                onClassificationPress = { navActions.navigateToClassification() }
             )
         }
         composable(DiaVantageDestinations.GLUCOSE_ROUTE) {
@@ -127,6 +133,23 @@ fun DiaVantageApp(
             MeasurementsScreen(
                 glucoseRepository = ID.remoteRepository.glucoseRepository(),
                 bloodRepository = ID.remoteRepository.bloodRepository(),
+                returnHome = {navActions.navigateToHome()}
+            )
+        }
+
+        composable(
+            DiaVantageDestinations.DIABETES_CLASSIFICATION_ROUTE,
+            arguments = listOf(
+                navArgument(CLASSIFICATION_QUESTION_ID) {type = NavType.IntType}
+            )
+        ){ entry ->
+            var questionId = entry.arguments?.getInt(CLASSIFICATION_QUESTION_ID)
+            questionId = questionId ?: 0
+            ClassificationScreen(
+                question = Questionnaire.getQuestion(questionId),
+                questionId = questionId,
+                prevScreen = {navActions.navigateToClassification(questionId - 1)},
+                nxtScreen = {navActions.navigateToClassification(questionId + 1)},
                 returnHome = {navActions.navigateToHome()}
             )
         }
